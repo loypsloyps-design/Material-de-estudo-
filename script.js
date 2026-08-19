@@ -1,47 +1,206 @@
 /* ==========================================
-   NSS PMES
+   NSS-PMES
    SISTEMA PRINCIPAL
 ========================================== */
 
 
-/* PERFIL */
+/* ==========================================
+   PERFIS
+========================================== */
 
 const profiles = {
+
     Felipe: {
-        name: "Felipe",
-        level: 4
+        name: "Felipe"
     },
 
     Primo: {
-        name: "Primo",
-        level: 1
+        name: "Primo"
     }
+
 };
 
+
+/* ==========================================
+   PERFIL ATIVO
+========================================== */
 
 let activeProfile =
     localStorage.getItem("nss_pmes_profile") || "Felipe";
 
 
-function atualizarPerfil() {
+/* ==========================================
+   DADOS PADRÃO DO PERFIL
+========================================== */
 
-    const profile = profiles[activeProfile];
+function criarDadosIniciais() {
 
-    document.getElementById("profileName").textContent =
-        profile.name;
+    return {
 
-    document.getElementById("profileLevel").textContent =
-        `Nível ${profile.level}`;
+        nivel: 1,
 
-    document.getElementById("topName").textContent =
-        profile.name;
+        xp: 0,
 
-    document.getElementById("welcome").textContent =
-        `Fala aí, ${profile.name}! 👋`;
+        xpProximoNivel: 500,
+
+        sequencia: 0,
+
+        tempoEstudo: 0,
+
+        questoesRespondidas: 0,
+
+        questoesAcertadas: 0,
+
+        progressoEdital: 0,
+
+        ultimaDataEstudo: null,
+
+        assuntosConcluidos: {},
+
+        questoes: {},
+
+        revisoes: [],
+
+        redacao: ""
+
+    };
+
 }
 
 
-atualizarPerfil();
+/* ==========================================
+   CARREGAR DADOS
+========================================== */
+
+function carregarDados() {
+
+    const chave =
+        `nss_${activeProfile}`;
+
+    const dadosSalvos =
+        localStorage.getItem(chave);
+
+    if (!dadosSalvos) {
+
+        const novosDados =
+            criarDadosIniciais();
+
+        localStorage.setItem(
+            chave,
+            JSON.stringify(novosDados)
+        );
+
+        return novosDados;
+    }
+
+    try {
+
+        return JSON.parse(dadosSalvos);
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar dados:",
+            erro
+        );
+
+        return criarDadosIniciais();
+
+    }
+
+}
+
+
+/* ==========================================
+   DADOS ATUAIS
+========================================== */
+
+let dadosPerfil =
+    carregarDados();
+
+
+/* ==========================================
+   SALVAR DADOS
+========================================== */
+
+function salvarDados() {
+
+    localStorage.setItem(
+
+        `nss_${activeProfile}`,
+
+        JSON.stringify(dadosPerfil)
+
+    );
+
+}
+
+
+/* ==========================================
+   ATUALIZAR PERFIL NA INTERFACE
+========================================== */
+
+function atualizarPerfil() {
+
+    const profile =
+        profiles[activeProfile];
+
+    if (!profile) return;
+
+
+    const profileName =
+        document.getElementById(
+            "profileName"
+        );
+
+    const profileLevel =
+        document.getElementById(
+            "profileLevel"
+        );
+
+    const topName =
+        document.getElementById(
+            "topName"
+        );
+
+    const welcome =
+        document.getElementById(
+            "welcome"
+        );
+
+
+    if (profileName) {
+
+        profileName.textContent =
+            profile.name;
+
+    }
+
+
+    if (profileLevel) {
+
+        profileLevel.textContent =
+            `Nível ${dadosPerfil.nivel}`;
+
+    }
+
+
+    if (topName) {
+
+        topName.textContent =
+            profile.name;
+
+    }
+
+
+    if (welcome) {
+
+        welcome.textContent =
+            `Fala aí, ${profile.name}! 👋`;
+
+    }
+
+}
 
 
 /* ==========================================
@@ -49,44 +208,254 @@ atualizarPerfil();
 ========================================== */
 
 const menuItems =
-    document.querySelectorAll(".menu-item");
+    document.querySelectorAll(
+        ".menu-item"
+    );
 
 const pages =
-    document.querySelectorAll(".page");
+    document.querySelectorAll(
+        ".page"
+    );
 
 
 menuItems.forEach(item => {
 
-    item.addEventListener("click", () => {
+    item.addEventListener(
+        "click",
+        () => {
 
-        const pageId =
-            item.dataset.page;
+            const pageId =
+                item.dataset.page;
 
-        menuItems.forEach(btn =>
-            btn.classList.remove("active")
-        );
 
-        item.classList.add("active");
+            menuItems.forEach(btn => {
 
-        pages.forEach(page =>
-            page.classList.remove("active-page")
-        );
+                btn.classList.remove(
+                    "active"
+                );
 
-        const selected =
-            document.getElementById(pageId);
+            });
 
-        if (selected) {
-            selected.classList.add("active-page");
+
+            item.classList.add(
+                "active"
+            );
+
+
+            pages.forEach(page => {
+
+                page.classList.remove(
+                    "active-page"
+                );
+
+            });
+
+
+            const selected =
+                document.getElementById(
+                    pageId
+                );
+
+
+            if (selected) {
+
+                selected.classList.add(
+                    "active-page"
+                );
+
+            }
+
+
+            if (pageId === "materias") {
+
+                renderizarMaterias();
+
+            }
+
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
         }
+    );
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+});
+
+
+/* ==========================================
+   RENDERIZAR MATÉRIAS
+========================================== */
+
+function renderizarMaterias() {
+
+    const container =
+        document.getElementById(
+            "materiasContainer"
+        );
+
+
+    if (!container) return;
+
+
+    container.innerHTML = "";
+
+
+    materiasPMES.forEach(materia => {
+
+
+        const progresso =
+            calcularProgressoMateria(
+                materia,
+                dadosPerfil
+            );
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "subject-card";
+
+
+        card.innerHTML = `
+
+            <h3>
+                ${materia.icone}
+                ${materia.nome}
+            </h3>
+
+            <div class="subject-content">
+
+                <div class="mini-circle
+                    ${progresso >= 70
+                        ? "green-circle"
+                        : "yellow-circle"}">
+
+                    ${progresso}%
+
+                </div>
+
+                <div>
+
+                    <p>
+                        Assuntos:
+                        <b>
+                            ${materia.assuntos.length}
+                        </b>
+                    </p>
+
+                    <p>
+                        Concluídos:
+                        <b>
+                            ${contarAssuntosConcluidos(materia)}
+                        </b>
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    style="width:${progresso}%">
+                </div>
+
+            </div>
+
+            <button
+                onclick="abrirMateria('${materia.id}')">
+
+                Ver matéria
+
+            </button>
+
+        `;
+
+
+        container.appendChild(
+            card
+        );
 
     });
 
-});
+}
+
+
+/* ==========================================
+   CONTAR ASSUNTOS CONCLUÍDOS
+========================================== */
+
+function contarAssuntosConcluidos(
+    materia
+) {
+
+    let total = 0;
+
+
+    materia.assuntos.forEach(
+        (assunto, index) => {
+
+            const chave =
+                `${materia.id}_assunto_${index}`;
+
+
+            if (
+                dadosPerfil[chave]?.concluido
+            ) {
+
+                total++;
+
+            }
+
+        }
+    );
+
+
+    return total;
+
+}
+
+
+/* ==========================================
+   ABRIR MATÉRIA
+========================================== */
+
+function abrirMateria(
+    materiaId
+) {
+
+    const materia =
+        materiasPMES.find(
+            item =>
+                item.id === materiaId
+        );
+
+
+    if (!materia) return;
+
+
+    console.log(
+        "Matéria selecionada:",
+        materia.nome
+    );
+
+
+    alert(
+        `${materia.nome}\n\n` +
+        `Em breve vamos abrir os assuntos, ` +
+        `materiais, aulas e questões dessa matéria.`
+    );
+
+}
 
 
 /* ==========================================
@@ -94,61 +463,155 @@ menuItems.forEach(item => {
 ========================================== */
 
 const profileModal =
-    document.getElementById("profileModal");
+    document.getElementById(
+        "profileModal"
+    );
 
 
-document
-    .getElementById("switchProfile")
-    .addEventListener("click", () => {
-
-        profileModal.classList.add("show");
-
-    });
+const switchProfile =
+    document.getElementById(
+        "switchProfile"
+    );
 
 
-document
-    .getElementById("profileSelector")
-    .addEventListener("click", () => {
-
-        profileModal.classList.add("show");
-
-    });
+const profileSelector =
+    document.getElementById(
+        "profileSelector"
+    );
 
 
-document
-    .getElementById("topProfile")
-    .addEventListener("click", () => {
-
-        profileModal.classList.add("show");
-
-    });
+const topProfile =
+    document.getElementById(
+        "topProfile"
+    );
 
 
-function fecharModal() {
+if (switchProfile) {
 
-    profileModal.classList.remove("show");
+    switchProfile.addEventListener(
+        "click",
+        () => {
+
+            profileModal.classList.add(
+                "show"
+            );
+
+        }
+    );
 
 }
 
 
-function trocarPerfil(nome) {
+if (profileSelector) {
 
-    activeProfile = nome;
+    profileSelector.addEventListener(
+        "click",
+        () => {
+
+            profileModal.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+}
+
+
+if (topProfile) {
+
+    topProfile.addEventListener(
+        "click",
+        () => {
+
+            profileModal.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   FECHAR MODAL
+========================================== */
+
+function fecharModal() {
+
+    if (!profileModal) return;
+
+    profileModal.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* ==========================================
+   TROCAR PERFIL
+========================================== */
+
+function trocarPerfil(
+    nome
+) {
+
+    if (!profiles[nome]) return;
+
+
+    activeProfile =
+        nome;
+
 
     localStorage.setItem(
         "nss_pmes_profile",
         nome
     );
 
+
+    dadosPerfil =
+        carregarDados();
+
+
     atualizarPerfil();
 
+    atualizarDashboard();
+
     fecharModal();
+
+    renderizarMaterias();
 
 }
 
 
 /* ==========================================
-   AULA
+   FECHAR MODAL CLICANDO FORA
+========================================== */
+
+if (profileModal) {
+
+    profileModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                profileModal
+            ) {
+
+                fecharModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   AULA DO DIA
 ========================================== */
 
 function abrirAula() {
@@ -158,64 +621,290 @@ function abrirAula() {
             '[data-page="aula"]'
         );
 
+
     if (aulaMenu) {
+
         aulaMenu.click();
+
     }
 
 }
 
 
 /* ==========================================
-   FECHAR MODAL CLICANDO FORA
+   PROGRESSO
 ========================================== */
 
-profileModal.addEventListener(
-    "click",
-    event => {
+function salvarProgresso(
+    chave,
+    valor
+) {
 
-        if (
-            event.target === profileModal
-        ) {
-            fecharModal();
-        }
+    dadosPerfil[chave] =
+        valor;
 
-    }
-);
+
+    salvarDados();
+
+}
+
+
+function carregarProgresso(
+    chave
+) {
+
+    return dadosPerfil[chave];
+
+}
 
 
 /* ==========================================
-   SALVAMENTO DE PROGRESSO
+   CONCLUIR ASSUNTO
 ========================================== */
 
-function salvarProgresso(chave, valor) {
+function concluirAssunto(
+    materiaId,
+    assuntoIndex
+) {
 
-    const dados =
-        JSON.parse(
-            localStorage.getItem(
-                `nss_${activeProfile}`
-            )
-        ) || {};
+    const chave =
+        `${materiaId}_assunto_${assuntoIndex}`;
 
-    dados[chave] = valor;
 
-    localStorage.setItem(
-        `nss_${activeProfile}`,
-        JSON.stringify(dados)
+    dadosPerfil[chave] = {
+
+        concluido: true,
+
+        data:
+            new Date().toISOString()
+
+    };
+
+
+    salvarDados();
+
+    atualizarDashboard();
+
+    renderizarMaterias();
+
+}
+
+
+/* ==========================================
+   XP
+========================================== */
+
+function adicionarXP(
+    quantidade
+) {
+
+    dadosPerfil.xp +=
+        quantidade;
+
+
+    while (
+        dadosPerfil.xp >=
+        dadosPerfil.xpProximoNivel
+    ) {
+
+        dadosPerfil.xp -=
+            dadosPerfil.xpProximoNivel;
+
+
+        dadosPerfil.nivel++;
+
+
+        dadosPerfil.xpProximoNivel =
+            Math.round(
+                dadosPerfil.xpProximoNivel *
+                1.25
+            );
+
+    }
+
+
+    salvarDados();
+
+    atualizarPerfil();
+
+    atualizarDashboard();
+
+}
+
+
+/* ==========================================
+   REGISTRAR QUESTÃO
+========================================== */
+
+function registrarQuestao(
+    questaoId,
+    acertou
+) {
+
+    dadosPerfil.questoesRespondidas++;
+
+
+    if (acertou) {
+
+        dadosPerfil.questoesAcertadas++;
+
+        adicionarXP(10);
+
+    } else {
+
+        dadosPerfil.revisoes.push({
+
+            questaoId:
+                questaoId,
+
+            data:
+                new Date().toISOString()
+
+        });
+
+        adicionarXP(3);
+
+    }
+
+
+    dadosPerfil.questoes[questaoId] = {
+
+        acertou:
+
+            acertou,
+
+        data:
+
+            new Date().toISOString()
+
+    };
+
+
+    salvarDados();
+
+    atualizarDashboard();
+
+}
+
+
+/* ==========================================
+   PROGRESSO DO EDITAL
+========================================== */
+
+function calcularProgressoGeral() {
+
+    let total = 0;
+
+    let concluidos = 0;
+
+
+    materiasPMES.forEach(
+        materia => {
+
+            materia.assuntos.forEach(
+                (assunto, index) => {
+
+                    total++;
+
+
+                    const chave =
+                        `${materia.id}_assunto_${index}`;
+
+
+                    if (
+                        dadosPerfil[chave]?.concluido
+                    ) {
+
+                        concluidos++;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    if (total === 0) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+        (concluidos / total) *
+        100
     );
 
 }
 
 
-function carregarProgresso(chave) {
+/* ==========================================
+   APROVEITAMENTO
+========================================== */
 
-    const dados =
-        JSON.parse(
-            localStorage.getItem(
-                `nss_${activeProfile}`
-            )
-        ) || {};
+function calcularAproveitamento() {
 
-    return dados[chave];
+    if (
+        dadosPerfil.questoesRespondidas ===
+        0
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+
+        (
+            dadosPerfil.questoesAcertadas /
+            dadosPerfil.questoesRespondidas
+        ) * 100
+
+    );
+
+}
+
+
+/* ==========================================
+   ATUALIZAR DASHBOARD
+========================================== */
+
+function atualizarDashboard() {
+
+    const progresso =
+        calcularProgressoGeral();
+
+
+    const aproveitamento =
+        calcularAproveitamento();
+
+
+    console.log(
+        "Progresso:",
+        progresso + "%"
+    );
+
+
+    console.log(
+        "Aproveitamento:",
+        aproveitamento + "%"
+    );
+
+
+    console.log(
+        "XP:",
+        dadosPerfil.xp
+    );
+
+
+    console.log(
+        "Nível:",
+        dadosPerfil.nivel
+    );
 
 }
 
@@ -225,17 +914,26 @@ function carregarProgresso(chave) {
 ========================================== */
 
 const redacao =
-    document.querySelector(".redacao-area");
+    document.querySelector(
+        ".redacao-area"
+    );
 
 
 if (redacao) {
 
     const textoSalvo =
-        carregarProgresso("redacao");
+        carregarProgresso(
+            "redacao"
+        );
+
 
     if (textoSalvo) {
-        redacao.value = textoSalvo;
+
+        redacao.value =
+            textoSalvo;
+
     }
+
 
     redacao.addEventListener(
         "input",
@@ -253,8 +951,19 @@ if (redacao) {
 
 
 /* ==========================================
-   DATA
+   INICIALIZAÇÃO
 ========================================== */
+
+atualizarPerfil();
+
+atualizarDashboard();
+
+renderizarMaterias();
+
+
+console.log(
+    "================================"
+);
 
 console.log(
     "NSS-PMES carregado com sucesso."
@@ -262,4 +971,16 @@ console.log(
 
 console.log(
     `Perfil ativo: ${activeProfile}`
+);
+
+console.log(
+    `Nível: ${dadosPerfil.nivel}`
+);
+
+console.log(
+    `XP: ${dadosPerfil.xp}`
+);
+
+console.log(
+    "================================"
 );
