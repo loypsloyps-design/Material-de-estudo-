@@ -967,9 +967,122 @@ function atualizarDashboard() {
     const progresso =
         calcularProgressoGeral();
 
-
     const aproveitamento =
         calcularAproveitamento();
+
+
+    /* ==============================
+       PROGRESSO GERAL
+    ============================== */
+
+    const elementosProgresso =
+        document.querySelectorAll(
+            "[data-progresso]"
+        );
+
+    elementosProgresso.forEach(
+        elemento => {
+
+            elemento.textContent =
+                `${progresso}%`;
+
+        }
+    );
+
+
+    /* ==============================
+       APROVEITAMENTO
+    ============================== */
+
+    const elementosAproveitamento =
+        document.querySelectorAll(
+            "[data-aproveitamento]"
+        );
+
+    elementosAproveitamento.forEach(
+        elemento => {
+
+            elemento.textContent =
+                `${aproveitamento}%`;
+
+        }
+    );
+
+
+    /* ==============================
+       XP
+    ============================== */
+
+    const elementosXP =
+        document.querySelectorAll(
+            "[data-xp]"
+        );
+
+    elementosXP.forEach(
+        elemento => {
+
+            elemento.textContent =
+                dadosPerfil.xp;
+
+        }
+    );
+
+
+    /* ==============================
+       NÍVEL
+    ============================== */
+
+    const elementosNivel =
+        document.querySelectorAll(
+            "[data-nivel]"
+        );
+
+    elementosNivel.forEach(
+        elemento => {
+
+            elemento.textContent =
+                dadosPerfil.nivel;
+
+        }
+    );
+
+
+    /* ==============================
+       QUESTÕES
+    ============================== */
+
+    const elementosQuestoes =
+        document.querySelectorAll(
+            "[data-questoes]"
+        );
+
+    elementosQuestoes.forEach(
+        elemento => {
+
+            elemento.textContent =
+                dadosPerfil.questoesRespondidas;
+
+        }
+    );
+
+
+    /* ==============================
+       TEMPO DE ESTUDO
+    ============================== */
+
+    const elementosTempo =
+        document.querySelectorAll(
+            "[data-tempo]"
+        );
+
+    elementosTempo.forEach(
+        elemento => {
+
+            elemento.textContent =
+                dadosPerfil.tempoEstudo;
+
+        }
+    );
 
 
     console.log(
@@ -977,32 +1090,20 @@ function atualizarDashboard() {
         progresso + "%"
     );
 
-
     console.log(
         "Aproveitamento:",
         aproveitamento + "%"
     );
-
 
     console.log(
         "XP:",
         dadosPerfil.xp
     );
 
-
     console.log(
         "Nível:",
         dadosPerfil.nivel
     );
-
-
-    /*
-       Por enquanto os cards do dashboard
-       ainda possuem valores visuais fixos.
-
-       Na próxima etapa vamos conectar
-       esses cards aos dados reais.
-    */
 
 }
 
