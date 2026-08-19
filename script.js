@@ -30,7 +30,7 @@ let activeProfile =
 
 
 /* ==========================================
-   DADOS PADRÃO DO PERFIL
+   DADOS PADRÃO
 ========================================== */
 
 function criarDadosIniciais() {
@@ -80,6 +80,7 @@ function carregarDados() {
     const dadosSalvos =
         localStorage.getItem(chave);
 
+
     if (!dadosSalvos) {
 
         const novosDados =
@@ -91,11 +92,15 @@ function carregarDados() {
         );
 
         return novosDados;
+
     }
+
 
     try {
 
-        return JSON.parse(dadosSalvos);
+        return JSON.parse(
+            dadosSalvos
+        );
 
     } catch (erro) {
 
@@ -104,7 +109,15 @@ function carregarDados() {
             erro
         );
 
-        return criarDadosIniciais();
+        const novosDados =
+            criarDadosIniciais();
+
+        localStorage.setItem(
+            chave,
+            JSON.stringify(novosDados)
+        );
+
+        return novosDados;
 
     }
 
@@ -112,7 +125,7 @@ function carregarDados() {
 
 
 /* ==========================================
-   DADOS ATUAIS
+   DADOS DO PERFIL
 ========================================== */
 
 let dadosPerfil =
@@ -129,7 +142,9 @@ function salvarDados() {
 
         `nss_${activeProfile}`,
 
-        JSON.stringify(dadosPerfil)
+        JSON.stringify(
+            dadosPerfil
+        )
 
     );
 
@@ -137,13 +152,14 @@ function salvarDados() {
 
 
 /* ==========================================
-   ATUALIZAR PERFIL NA INTERFACE
+   ATUALIZAR PERFIL
 ========================================== */
 
 function atualizarPerfil() {
 
     const profile =
         profiles[activeProfile];
+
 
     if (!profile) return;
 
@@ -153,15 +169,18 @@ function atualizarPerfil() {
             "profileName"
         );
 
+
     const profileLevel =
         document.getElementById(
             "profileLevel"
         );
 
+
     const topName =
         document.getElementById(
             "topName"
         );
+
 
     const welcome =
         document.getElementById(
@@ -211,6 +230,7 @@ const menuItems =
     document.querySelectorAll(
         ".menu-item"
     );
+
 
 const pages =
     document.querySelectorAll(
@@ -266,7 +286,11 @@ menuItems.forEach(item => {
             }
 
 
-            if (pageId === "materias") {
+            /* Atualiza a página de matérias */
+
+            if (
+                pageId === "materias"
+            ) {
 
                 renderizarMaterias();
 
@@ -305,87 +329,109 @@ function renderizarMaterias() {
     container.innerHTML = "";
 
 
-    materiasPMES.forEach(materia => {
+    materiasPMES.forEach(
+        materia => {
 
 
-        const progresso =
-            calcularProgressoMateria(
-                materia,
-                dadosPerfil
+            const progresso =
+                calcularProgressoMateria(
+                    materia,
+                    dadosPerfil
+                );
+
+
+            const concluidos =
+                contarAssuntosConcluidos(
+                    materia
+                );
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "subject-card";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    ${materia.icone}
+                    ${materia.nome}
+                </h3>
+
+
+                <div class="subject-content">
+
+                    <div class="
+                        mini-circle
+                        ${
+                            progresso >= 70
+                                ? "green-circle"
+                                : "yellow-circle"
+                        }
+                    ">
+
+                        ${progresso}%
+
+                    </div>
+
+
+                    <div>
+
+                        <p>
+                            Assuntos:
+                            <b>
+                                ${materia.assuntos.length}
+                            </b>
+                        </p>
+
+
+                        <p>
+                            Concluídos:
+                            <b>
+                                ${concluidos}
+                            </b>
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        style="
+                            width:${progresso}%;
+                        "
+                    ></div>
+
+                </div>
+
+
+                <button
+                    onclick="
+                        abrirMateria('${materia.id}')
+                    "
+                >
+
+                    Ver matéria
+
+                </button>
+
+            `;
+
+
+            container.appendChild(
+                card
             );
 
-
-        const card =
-            document.createElement(
-                "div"
-            );
-
-
-        card.className =
-            "subject-card";
-
-
-        card.innerHTML = `
-
-            <h3>
-                ${materia.icone}
-                ${materia.nome}
-            </h3>
-
-            <div class="subject-content">
-
-                <div class="mini-circle
-                    ${progresso >= 70
-                        ? "green-circle"
-                        : "yellow-circle"}">
-
-                    ${progresso}%
-
-                </div>
-
-                <div>
-
-                    <p>
-                        Assuntos:
-                        <b>
-                            ${materia.assuntos.length}
-                        </b>
-                    </p>
-
-                    <p>
-                        Concluídos:
-                        <b>
-                            ${contarAssuntosConcluidos(materia)}
-                        </b>
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="progress">
-
-                <div
-                    style="width:${progresso}%">
-                </div>
-
-            </div>
-
-            <button
-                onclick="abrirMateria('${materia.id}')">
-
-                Ver matéria
-
-            </button>
-
-        `;
-
-
-        container.appendChild(
-            card
-        );
-
-    });
+        }
+    );
 
 }
 
@@ -409,7 +455,8 @@ function contarAssuntosConcluidos(
 
 
             if (
-                dadosPerfil[chave]?.concluido
+                dadosPerfil[chave] &&
+                dadosPerfil[chave].concluido
             ) {
 
                 total++;
@@ -450,9 +497,19 @@ function abrirMateria(
 
 
     alert(
+
         `${materia.nome}\n\n` +
-        `Em breve vamos abrir os assuntos, ` +
-        `materiais, aulas e questões dessa matéria.`
+
+        `Assuntos disponíveis: ` +
+
+        `${materia.assuntos.length}\n\n` +
+
+        `A próxima etapa será abrir ` +
+
+        `os assuntos, materiais, aulas ` +
+
+        `e questões.`
+
     );
 
 }
@@ -492,9 +549,13 @@ if (switchProfile) {
         "click",
         () => {
 
-            profileModal.classList.add(
-                "show"
-            );
+            if (profileModal) {
+
+                profileModal.classList.add(
+                    "show"
+                );
+
+            }
 
         }
     );
@@ -508,9 +569,13 @@ if (profileSelector) {
         "click",
         () => {
 
-            profileModal.classList.add(
-                "show"
-            );
+            if (profileModal) {
+
+                profileModal.classList.add(
+                    "show"
+                );
+
+            }
 
         }
     );
@@ -524,9 +589,13 @@ if (topProfile) {
         "click",
         () => {
 
-            profileModal.classList.add(
-                "show"
-            );
+            if (profileModal) {
+
+                profileModal.classList.add(
+                    "show"
+                );
+
+            }
 
         }
     );
@@ -541,6 +610,7 @@ if (topProfile) {
 function fecharModal() {
 
     if (!profileModal) return;
+
 
     profileModal.classList.remove(
         "show"
@@ -578,9 +648,9 @@ function trocarPerfil(
 
     atualizarDashboard();
 
-    fecharModal();
-
     renderizarMaterias();
+
+    fecharModal();
 
 }
 
@@ -611,7 +681,7 @@ if (profileModal) {
 
 
 /* ==========================================
-   AULA DO DIA
+   ABRIR AULA
 ========================================== */
 
 function abrirAula() {
@@ -632,7 +702,7 @@ function abrirAula() {
 
 
 /* ==========================================
-   PROGRESSO
+   SALVAR PROGRESSO
 ========================================== */
 
 function salvarProgresso(
@@ -648,6 +718,10 @@ function salvarProgresso(
 
 }
 
+
+/* ==========================================
+   CARREGAR PROGRESSO
+========================================== */
 
 function carregarProgresso(
     chave
@@ -683,7 +757,9 @@ function concluirAssunto(
 
     salvarDados();
 
+
     atualizarDashboard();
+
 
     renderizarMaterias();
 
@@ -691,7 +767,7 @@ function concluirAssunto(
 
 
 /* ==========================================
-   XP
+   ADICIONAR XP
 ========================================== */
 
 function adicionarXP(
@@ -716,8 +792,10 @@ function adicionarXP(
 
         dadosPerfil.xpProximoNivel =
             Math.round(
+
                 dadosPerfil.xpProximoNivel *
                 1.25
+
             );
 
     }
@@ -725,7 +803,9 @@ function adicionarXP(
 
     salvarDados();
 
+
     atualizarPerfil();
+
 
     atualizarDashboard();
 
@@ -748,6 +828,7 @@ function registrarQuestao(
 
         dadosPerfil.questoesAcertadas++;
 
+
         adicionarXP(10);
 
     } else {
@@ -762,6 +843,7 @@ function registrarQuestao(
 
         });
 
+
         adicionarXP(3);
 
     }
@@ -770,11 +852,9 @@ function registrarQuestao(
     dadosPerfil.questoes[questaoId] = {
 
         acertou:
-
             acertou,
 
         data:
-
             new Date().toISOString()
 
     };
@@ -782,13 +862,14 @@ function registrarQuestao(
 
     salvarDados();
 
+
     atualizarDashboard();
 
 }
 
 
 /* ==========================================
-   PROGRESSO DO EDITAL
+   PROGRESSO GERAL DO EDITAL
 ========================================== */
 
 function calcularProgressoGeral() {
@@ -812,7 +893,8 @@ function calcularProgressoGeral() {
 
 
                     if (
-                        dadosPerfil[chave]?.concluido
+                        dadosPerfil[chave] &&
+                        dadosPerfil[chave].concluido
                     ) {
 
                         concluidos++;
@@ -834,8 +916,12 @@ function calcularProgressoGeral() {
 
 
     return Math.round(
-        (concluidos / total) *
-        100
+
+        (
+            concluidos /
+            total
+        ) * 100
+
     );
 
 }
@@ -860,8 +946,11 @@ function calcularAproveitamento() {
     return Math.round(
 
         (
+
             dadosPerfil.questoesAcertadas /
+
             dadosPerfil.questoesRespondidas
+
         ) * 100
 
     );
@@ -905,6 +994,15 @@ function atualizarDashboard() {
         "Nível:",
         dadosPerfil.nivel
     );
+
+
+    /*
+       Por enquanto os cards do dashboard
+       ainda possuem valores visuais fixos.
+
+       Na próxima etapa vamos conectar
+       esses cards aos dados reais.
+    */
 
 }
 
@@ -951,12 +1049,60 @@ if (redacao) {
 
 
 /* ==========================================
+   RESETAR PERFIL
+========================================== */
+
+function resetarPerfil() {
+
+    const confirmar =
+        confirm(
+
+            "ATENÇÃO!\n\n" +
+
+            "Isso vai apagar todo o progresso " +
+
+            `do perfil ${activeProfile}.\n\n` +
+
+            "Deseja continuar?"
+
+        );
+
+
+    if (!confirmar) return;
+
+
+    dadosPerfil =
+        criarDadosIniciais();
+
+
+    salvarDados();
+
+
+    atualizarPerfil();
+
+
+    atualizarDashboard();
+
+
+    renderizarMaterias();
+
+
+    alert(
+        "Progresso zerado com sucesso! 🚔🔥"
+    );
+
+}
+
+
+/* ==========================================
    INICIALIZAÇÃO
 ========================================== */
 
 atualizarPerfil();
 
+
 atualizarDashboard();
+
 
 renderizarMaterias();
 
@@ -965,21 +1111,26 @@ console.log(
     "================================"
 );
 
+
 console.log(
     "NSS-PMES carregado com sucesso."
 );
+
 
 console.log(
     `Perfil ativo: ${activeProfile}`
 );
 
+
 console.log(
     `Nível: ${dadosPerfil.nivel}`
 );
 
+
 console.log(
     `XP: ${dadosPerfil.xp}`
 );
+
 
 console.log(
     "================================"
