@@ -98,9 +98,27 @@ function carregarDados() {
 
     try {
 
-        return JSON.parse(
-            dadosSalvos
-        );
+        const dados =
+            JSON.parse(dadosSalvos);
+
+
+        /*
+           Garante que dados antigos não
+           quebrem o sistema caso alguma
+           propriedade esteja faltando.
+        */
+
+        const dadosIniciais =
+            criarDadosIniciais();
+
+
+        return {
+
+            ...dadosIniciais,
+
+            ...dados
+
+        };
 
     } catch (erro) {
 
@@ -109,13 +127,16 @@ function carregarDados() {
             erro
         );
 
+
         const novosDados =
             criarDadosIniciais();
+
 
         localStorage.setItem(
             chave,
             JSON.stringify(novosDados)
         );
+
 
         return novosDados;
 
@@ -219,6 +240,21 @@ function atualizarPerfil() {
 
     }
 
+
+    /*
+       Atualiza qualquer elemento que
+       esteja usando data-nivel.
+    */
+
+    document
+        .querySelectorAll("[data-nivel]")
+        .forEach(elemento => {
+
+            elemento.textContent =
+                dadosPerfil.nivel;
+
+        });
+
 }
 
 
@@ -286,8 +322,6 @@ menuItems.forEach(item => {
             }
 
 
-            /* Atualiza a página de matérias */
-
             if (
                 pageId === "materias"
             ) {
@@ -327,6 +361,20 @@ function renderizarMaterias() {
 
 
     container.innerHTML = "";
+
+
+    if (
+        typeof materiasPMES ===
+        "undefined"
+    ) {
+
+        console.error(
+            "materiasPMES não foi carregado."
+        );
+
+        return;
+
+    }
 
 
     materiasPMES.forEach(
@@ -437,12 +485,77 @@ function renderizarMaterias() {
 
 
 /* ==========================================
+   CALCULAR PROGRESSO DA MATÉRIA
+========================================== */
+
+function calcularProgressoMateria(
+    materia,
+    dados
+) {
+
+    if (
+        !materia ||
+        !materia.assuntos ||
+        materia.assuntos.length === 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    let concluidos = 0;
+
+
+    materia.assuntos.forEach(
+        (assunto, index) => {
+
+            const chave =
+                `${materia.id}_assunto_${index}`;
+
+
+            if (
+                dados[chave] &&
+                dados[chave].concluido
+            ) {
+
+                concluidos++;
+
+            }
+
+        }
+    );
+
+
+    return Math.round(
+
+        (
+            concluidos /
+            materia.assuntos.length
+        ) * 100
+
+    );
+
+}
+
+
+/* ==========================================
    CONTAR ASSUNTOS CONCLUÍDOS
 ========================================== */
 
 function contarAssuntosConcluidos(
     materia
 ) {
+
+    if (
+        !materia ||
+        !materia.assuntos
+    ) {
+
+        return 0;
+
+    }
+
 
     let total = 0;
 
@@ -479,6 +592,20 @@ function contarAssuntosConcluidos(
 function abrirMateria(
     materiaId
 ) {
+
+    if (
+        typeof materiasPMES ===
+        "undefined"
+    ) {
+
+        alert(
+            "Não foi possível carregar as matérias."
+        );
+
+        return;
+
+    }
+
 
     const materia =
         materiasPMES.find(
@@ -650,6 +777,8 @@ function trocarPerfil(
 
     renderizarMaterias();
 
+    carregarRedacao();
+
     fecharModal();
 
 }
@@ -716,6 +845,9 @@ function salvarProgresso(
 
     salvarDados();
 
+
+    atualizarDashboard();
+
 }
 
 
@@ -759,7 +891,6 @@ function concluirAssunto(
 
 
     atualizarDashboard();
-
 
     renderizarMaterias();
 
@@ -806,7 +937,6 @@ function adicionarXP(
 
     atualizarPerfil();
 
-
     atualizarDashboard();
 
 }
@@ -828,7 +958,6 @@ function registrarQuestao(
 
         dadosPerfil.questoesAcertadas++;
 
-
         adicionarXP(10);
 
     } else {
@@ -842,7 +971,6 @@ function registrarQuestao(
                 new Date().toISOString()
 
         });
-
 
         adicionarXP(3);
 
@@ -879,8 +1007,23 @@ function calcularProgressoGeral() {
     let concluidos = 0;
 
 
+    if (
+        typeof materiasPMES ===
+        "undefined"
+    ) {
+
+        return 0;
+
+    }
+
+
     materiasPMES.forEach(
         materia => {
+
+            if (
+                !materia.assuntos
+            ) return;
+
 
             materia.assuntos.forEach(
                 (assunto, index) => {
@@ -967,122 +1110,171 @@ function atualizarDashboard() {
     const progresso =
         calcularProgressoGeral();
 
+
     const aproveitamento =
         calcularAproveitamento();
 
 
-    /* ==============================
-       PROGRESSO GERAL
-    ============================== */
+    /*
+       Elementos que usam data-progresso
+    */
 
-    const elementosProgresso =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-progresso]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    `${progresso}%`;
+
+            }
         );
 
-    elementosProgresso.forEach(
-        elemento => {
 
-            elemento.textContent =
-                `${progresso}%`;
+    /*
+       Elementos que usam data-aproveitamento
+    */
 
-        }
-    );
-
-
-    /* ==============================
-       APROVEITAMENTO
-    ============================== */
-
-    const elementosAproveitamento =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-aproveitamento]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    `${aproveitamento}%`;
+
+            }
         );
 
-    elementosAproveitamento.forEach(
-        elemento => {
 
-            elemento.textContent =
-                `${aproveitamento}%`;
+    /*
+       Elementos que usam data-xp
+    */
 
-        }
-    );
-
-
-    /* ==============================
-       XP
-    ============================== */
-
-    const elementosXP =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-xp]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    dadosPerfil.xp;
+
+            }
         );
 
-    elementosXP.forEach(
-        elemento => {
 
-            elemento.textContent =
-                dadosPerfil.xp;
+    /*
+       Elementos que usam data-nivel
+    */
 
-        }
-    );
-
-
-    /* ==============================
-       NÍVEL
-    ============================== */
-
-    const elementosNivel =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-nivel]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    dadosPerfil.nivel;
+
+            }
         );
 
-    elementosNivel.forEach(
-        elemento => {
 
-            elemento.textContent =
-                dadosPerfil.nivel;
+    /*
+       Elementos que usam data-questoes
+    */
 
-        }
-    );
-
-
-    /* ==============================
-       QUESTÕES
-    ============================== */
-
-    const elementosQuestoes =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-questoes]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    dadosPerfil.questoesRespondidas;
+
+            }
         );
 
-    elementosQuestoes.forEach(
-        elemento => {
 
-            elemento.textContent =
-                dadosPerfil.questoesRespondidas;
+    /*
+       Elementos que usam data-acertos
+    */
 
-        }
-    );
+    document
+        .querySelectorAll(
+            "[data-acertos]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    dadosPerfil.questoesAcertadas;
+
+            }
+        );
 
 
-    /* ==============================
-       TEMPO DE ESTUDO
-    ============================== */
+    /*
+       Elementos que usam data-tempo
+    */
 
-    const elementosTempo =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-tempo]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    dadosPerfil.tempoEstudo;
+
+            }
         );
 
-    elementosTempo.forEach(
-        elemento => {
 
-            elemento.textContent =
-                dadosPerfil.tempoEstudo;
+    /*
+       Elementos que usam data-sequencia
+    */
 
-        }
-    );
+    document
+        .querySelectorAll(
+            "[data-sequencia]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.textContent =
+                    dadosPerfil.sequencia;
+
+            }
+        );
+
+
+    /*
+       Atualiza barras de progresso
+    */
+
+    document
+        .querySelectorAll(
+            "[data-barra-progresso]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.style.width =
+                    `${progresso}%`;
+
+            }
+        );
 
 
     console.log(
@@ -1090,15 +1282,18 @@ function atualizarDashboard() {
         progresso + "%"
     );
 
+
     console.log(
         "Aproveitamento:",
         aproveitamento + "%"
     );
 
+
     console.log(
         "XP:",
         dadosPerfil.xp
     );
+
 
     console.log(
         "Nível:",
@@ -1112,6 +1307,29 @@ function atualizarDashboard() {
    REDAÇÃO
 ========================================== */
 
+function carregarRedacao() {
+
+    const redacao =
+        document.querySelector(
+            ".redacao-area"
+        );
+
+
+    if (!redacao) return;
+
+
+    const textoSalvo =
+        carregarProgresso(
+            "redacao"
+        );
+
+
+    redacao.value =
+        textoSalvo || "";
+
+}
+
+
 const redacao =
     document.querySelector(
         ".redacao-area"
@@ -1120,18 +1338,7 @@ const redacao =
 
 if (redacao) {
 
-    const textoSalvo =
-        carregarProgresso(
-            "redacao"
-        );
-
-
-    if (textoSalvo) {
-
-        redacao.value =
-            textoSalvo;
-
-    }
+    carregarRedacao();
 
 
     redacao.addEventListener(
@@ -1150,21 +1357,37 @@ if (redacao) {
 
 
 /* ==========================================
-   RESETAR PERFIL
+   RESETAR PROGRESSO DO PERFIL
 ========================================== */
 
-function resetarPerfil() {
+function resetarProgresso() {
 
     const confirmar =
         confirm(
 
-            "ATENÇÃO!\n\n" +
+            "⚠️ ATENÇÃO!\n\n" +
 
-            "Isso vai apagar todo o progresso " +
+            "Isso vai apagar TODO o progresso " +
 
             `do perfil ${activeProfile}.\n\n` +
 
-            "Deseja continuar?"
+            "• XP\n" +
+
+            "• Nível\n" +
+
+            "• Questões\n" +
+
+            "• Assuntos concluídos\n" +
+
+            "• Revisões\n" +
+
+            "• Redação\n" +
+
+            "• Tempo de estudo\n" +
+
+            "• Sequência\n\n" +
+
+            "Deseja realmente começar do ZERO?"
 
         );
 
@@ -1172,24 +1395,61 @@ function resetarPerfil() {
     if (!confirmar) return;
 
 
+    /*
+       Cria um perfil completamente novo.
+    */
+
     dadosPerfil =
         criarDadosIniciais();
 
 
+    /*
+       Salva o perfil zerado.
+    */
+
     salvarDados();
 
 
-    atualizarPerfil();
+    /*
+       Atualiza todas as partes
+       do sistema.
+    */
 
+    atualizarPerfil();
 
     atualizarDashboard();
 
-
     renderizarMaterias();
+
+    carregarRedacao();
+
+
+    /*
+       Garante que qualquer campo
+       de redação seja limpo.
+    */
+
+    const campoRedacao =
+        document.querySelector(
+            ".redacao-area"
+        );
+
+
+    if (campoRedacao) {
+
+        campoRedacao.value = "";
+
+    }
 
 
     alert(
-        "Progresso zerado com sucesso! 🚔🔥"
+
+        "✅ PROGRESSO RESETADO!\n\n" +
+
+        `O perfil ${activeProfile} ` +
+
+        "começou novamente do ZERO."
+
     );
 
 }
@@ -1201,11 +1461,11 @@ function resetarPerfil() {
 
 atualizarPerfil();
 
-
 atualizarDashboard();
 
-
 renderizarMaterias();
+
+carregarRedacao();
 
 
 console.log(
@@ -1236,45 +1496,3 @@ console.log(
 console.log(
     "================================"
 );
-
-/* ==========================================
-   RESETAR PROGRESSO DO PERFIL
-========================================== */
-
-function resetarProgresso() {
-
-    const confirmar = confirm(
-        "⚠️ ATENÇÃO!\n\n" +
-        "Isso vai apagar todo o progresso deste perfil:\n\n" +
-        "• XP\n" +
-        "• Nível\n" +
-        "• Questões\n" +
-        "• Assuntos concluídos\n" +
-        "• Revisões\n" +
-        "• Redação salva\n" +
-        "• Tempo de estudo\n\n" +
-        "Deseja realmente começar do ZERO?"
-    );
-
-    if (!confirmar) return;
-
-    localStorage.removeItem(
-        `nss_${activeProfile}`
-    );
-
-    dadosPerfil = criarDadosIniciais();
-
-    salvarDados();
-
-    atualizarPerfil();
-
-    atualizarDashboard();
-
-    renderizarMaterias();
-
-    alert(
-        "✅ Progresso resetado!\n\n" +
-        "O perfil começou do zero."
-    );
-
-}
