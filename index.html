@@ -12,79 +12,49 @@
 
     <title>NSS PMES — Preparatório Soldado</title>
 
+    <link rel="stylesheet" href="style.css">
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
         crossorigin
     >
 
-
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
-
-    <!-- DADOS DO SISTEMA -->
-
     <script src="dados/materias.js"></script>
-
-    <script src="dados/aulas.js"></script>
-
-    <script src="dados/questoes.js"></script>
 
 </head>
 
 
 <body>
 
-
 <div class="app">
 
-
-    <!-- ==========================================
+    <!-- ======================================
          SIDEBAR
-    ========================================== -->
+    ======================================= -->
 
     <aside class="sidebar">
-
 
         <div class="brand">
 
             <div class="brand-logo">
-
-                <div class="shield">
-                    🛡️
-                </div>
-
+                <div class="shield">🛡️</div>
             </div>
-
 
             <div>
 
                 <div class="brand-title">
-
                     NSS<span>PMES</span>
-
                 </div>
 
-
                 <div class="brand-subtitle">
-
                     PREPARATÓRIO SOLDADO
-
                 </div>
 
             </div>
@@ -92,23 +62,14 @@
         </div>
 
 
-
-        <!-- MENU -->
-
         <nav class="menu">
-
 
             <button
                 class="menu-item active"
                 data-page="inicio"
             >
-
                 <span>⌂</span>
-
-                <label>
-                    Início
-                </label>
-
+                <label>Início</label>
             </button>
 
 
@@ -116,13 +77,8 @@
                 class="menu-item"
                 data-page="aula"
             >
-
                 <span>▣</span>
-
-                <label>
-                    Aula do dia
-                </label>
-
+                <label>Aula do dia</label>
             </button>
 
 
@@ -130,13 +86,8 @@
                 class="menu-item"
                 data-page="materias"
             >
-
                 <span>📖</span>
-
-                <label>
-                    Matérias
-                </label>
-
+                <label>Matérias</label>
             </button>
 
 
@@ -144,13 +95,8 @@
                 class="menu-item"
                 data-page="questoes"
             >
-
                 <span>▤</span>
-
-                <label>
-                    Questões
-                </label>
-
+                <label>Questões</label>
             </button>
 
 
@@ -158,13 +104,8 @@
                 class="menu-item"
                 data-page="revisoes"
             >
-
                 <span>⟳</span>
-
-                <label>
-                    Revisões
-                </label>
-
+                <label>Revisões</label>
             </button>
 
 
@@ -172,13 +113,8 @@
                 class="menu-item"
                 data-page="simulados"
             >
-
                 <span>◎</span>
-
-                <label>
-                    Simulados
-                </label>
-
+                <label>Simulados</label>
             </button>
 
 
@@ -186,13 +122,8 @@
                 class="menu-item"
                 data-page="redacao"
             >
-
                 <span>✎</span>
-
-                <label>
-                    Redação
-                </label>
-
+                <label>Redação</label>
             </button>
 
 
@@ -200,13 +131,8 @@
                 class="menu-item"
                 data-page="desempenho"
             >
-
                 <span>▥</span>
-
-                <label>
-                    Desempenho
-                </label>
-
+                <label>Desempenho</label>
             </button>
 
 
@@ -214,13 +140,8 @@
                 class="menu-item"
                 data-page="ranking"
             >
-
                 <span>🏆</span>
-
-                <label>
-                    Rankings
-                </label>
-
+                <label>Ranking</label>
             </button>
 
 
@@ -228,13 +149,8 @@
                 class="menu-item"
                 data-page="taf"
             >
-
                 <span>🏃</span>
-
-                <label>
-                    TAF
-                </label>
-
+                <label>TAF</label>
             </button>
 
 
@@ -242,41 +158,30 @@
                 class="menu-item"
                 data-page="config"
             >
-
                 <span>⚙</span>
-
-                <label>
-                    Configurações
-                </label>
-
+                <label>Configurações</label>
             </button>
-
 
         </nav>
 
 
-
-        <!-- ==========================================
-             PERFIL
-        ========================================== -->
+        <!-- PERFIL -->
 
         <div class="profile-box">
 
-
-            <small>
-                Perfil ativo:
-            </small>
-
+            <small>Perfil ativo:</small>
 
             <button
                 class="profile-selector"
                 id="profileSelector"
             >
 
-                <div class="avatar">
+                <div
+                    class="avatar"
+                    id="sidebarAvatar"
+                >
                     👤
                 </div>
-
 
                 <div class="profile-info">
 
@@ -284,17 +189,13 @@
                         Felipe
                     </strong>
 
-
                     <small id="profileLevel">
                         Nível 1
                     </small>
 
                 </div>
 
-
-                <span>
-                    ⌄
-                </span>
+                <span>⌄</span>
 
             </button>
 
@@ -303,32 +204,25 @@
                 class="switch-profile"
                 id="switchProfile"
             >
-
                 Trocar de perfil
-
             </button>
 
-
         </div>
-
 
     </aside>
 
 
 
-    <!-- ==========================================
+    <!-- ======================================
          CONTEÚDO PRINCIPAL
-    ========================================== -->
+    ======================================= -->
 
     <main class="main">
 
 
-        <!-- ==========================================
-             HEADER
-        ========================================== -->
+        <!-- HEADER -->
 
         <header class="topbar">
-
 
             <div>
 
@@ -336,29 +230,20 @@
                     Fala aí, Felipe! 👋
                 </h1>
 
-
                 <p>
-                    Hora de estudar.
-                    Disciplina hoje, vitória amanhã.
+                    Hora de estudar. Disciplina hoje,
+                    vitória amanhã.
                 </p>
 
             </div>
 
 
-
             <div class="top-actions">
 
-
                 <button class="notification">
-
                     🔔
-
-                    <span>
-                        3
-                    </span>
-
+                    <span>0</span>
                 </button>
-
 
 
                 <button
@@ -366,10 +251,12 @@
                     id="topProfile"
                 >
 
-                    <div class="avatar">
+                    <div
+                        class="avatar"
+                        id="topAvatar"
+                    >
                         👤
                     </div>
-
 
                     <div>
 
@@ -377,34 +264,25 @@
                             Felipe
                         </strong>
 
-
-                        <small>
-                            Nível
-                            <span data-nivel>
-                                1
-                            </span>
+                        <small id="topLevel">
+                            Nível 1
                         </small>
 
                     </div>
 
-
-                    <span>
-                        ⌄
-                    </span>
+                    <span>⌄</span>
 
                 </button>
 
-
             </div>
-
 
         </header>
 
 
 
-        <!-- ==========================================
-             DASHBOARD
-        ========================================== -->
+        <!-- ======================================
+             INÍCIO
+        ======================================= -->
 
         <section
             id="inicio"
@@ -412,14 +290,10 @@
         >
 
 
-            <!-- ==========================================
-                 CARDS PRINCIPAIS
-            ========================================== -->
+            <!-- CARDS -->
 
             <div class="stats-grid">
 
-
-                <!-- SEQUÊNCIA -->
 
                 <div class="stat-card">
 
@@ -427,34 +301,20 @@
                         🔥
                     </div>
 
+                    <span>Sequência</span>
 
-                    <span>
-                        Sequência
-                    </span>
-
-
-                    <strong>
-
-                        <span data-sequencia>
-                            0
-                        </span>
-
-                        <small>
-                            dias
-                        </small>
-
+                    <strong id="statSequencia">
+                        0
+                        <small>dias</small>
                     </strong>
 
-
-                    <p class="orange">
-                        🔥 Comece hoje!
+                    <p id="statSequenciaTexto">
+                        Comece hoje!
                     </p>
 
                 </div>
 
 
-
-                <!-- TEMPO -->
 
                 <div class="stat-card">
 
@@ -462,36 +322,19 @@
                         ◷
                     </div>
 
+                    <span>Estudo total</span>
 
-                    <span>
-                        Estudo hoje
-                    </span>
-
-
-                    <strong>
-                        0h 00m
+                    <strong id="statTempo">
+                        0h
                     </strong>
 
-
                     <p>
-                        Meta: 1h 30m
+                        Tempo acumulado
                     </p>
-
-
-                    <div class="progress">
-
-                        <div
-                            data-barra-tempo
-                            style="width:0%"
-                        ></div>
-
-                    </div>
 
                 </div>
 
 
-
-                <!-- APROVEITAMENTO -->
 
                 <div class="stat-card">
 
@@ -499,16 +342,11 @@
                         ◎
                     </div>
 
+                    <span>Aproveitamento</span>
 
-                    <span>
-                        Aproveitamento
-                    </span>
-
-
-                    <strong data-aproveitamento>
+                    <strong id="statAproveitamento">
                         0%
                     </strong>
-
 
                     <p>
                         Média geral
@@ -518,44 +356,32 @@
 
 
 
-                <!-- PROGRESSO EDITAL -->
-
                 <div class="stat-card">
 
                     <div class="stat-icon book">
                         ▣
                     </div>
 
+                    <span>Progresso do edital</span>
 
-                    <span>
-                        Progresso do edital
-                    </span>
-
-
-                    <strong data-progresso>
+                    <strong id="statProgresso">
                         0%
                     </strong>
-
 
                     <p>
                         Conteúdo concluído
                     </p>
 
-
                     <div class="progress green">
-
                         <div
-                            data-barra-progresso
+                            id="progressEdital"
                             style="width:0%"
                         ></div>
-
                     </div>
 
                 </div>
 
 
-
-                <!-- XP -->
 
                 <div class="stat-card">
 
@@ -563,52 +389,37 @@
                         ★
                     </div>
 
+                    <span>XP Total</span>
 
-                    <span>
-                        XP Total
-                    </span>
-
-
-                    <strong data-xp>
+                    <strong id="statXP">
                         0
                     </strong>
 
-
-                    <p>
-                        Nível
-                        <span data-nivel>
-                            1
-                        </span>
+                    <p id="statNivel">
+                        Nível 1
                     </p>
 
-
                     <div class="progress yellow">
-
                         <div
-                            data-barra-xp
+                            id="progressXP"
                             style="width:0%"
                         ></div>
-
                     </div>
 
                 </div>
-
 
             </div>
 
 
 
-            <!-- ==========================================
-                 LINHA PRINCIPAL
-            ========================================== -->
+            <!-- GRID PRINCIPAL -->
 
             <div class="dashboard-grid">
 
 
-                <!-- AULA DO DIA -->
+                <!-- AULA -->
 
                 <section class="panel lesson-panel">
-
 
                     <div class="panel-header">
 
@@ -621,30 +432,23 @@
 
                     <div class="lesson">
 
-
                         <div class="lesson-content">
-
 
                             <span class="subject purple">
                                 📖 Português
                             </span>
 
-
                             <h2>
                                 Interpretação de Textos
                             </h2>
 
-
                             <p>
-
-                                Compreensão e interpretação
-                                de textos verbais e não verbais.
-
+                                Comece sua preparação estudando
+                                compreensão e interpretação textual.
                             </p>
 
 
                             <div class="lesson-info">
-
 
                                 <span>
                                     ◷
@@ -666,7 +470,6 @@
                                     <small>XP</small>
                                 </span>
 
-
                             </div>
 
 
@@ -677,12 +480,9 @@
 
                                 Iniciar aula
 
-                                <span>
-                                    ▶
-                                </span>
+                                <span>▶</span>
 
                             </button>
-
 
                         </div>
 
@@ -695,9 +495,7 @@
 
                         </div>
 
-
                     </div>
-
 
                 </section>
 
@@ -707,15 +505,15 @@
 
                 <section class="panel upcoming">
 
-
                     <div class="panel-header">
 
                         <h2>
                             PRÓXIMAS AULAS
                         </h2>
 
-
-                        <button>
+                        <button
+                            onclick="abrirAula()"
+                        >
                             Ver todas
                         </button>
 
@@ -724,13 +522,11 @@
 
                     <div class="next-list">
 
-
                         <div class="next-item">
 
                             <strong class="number blue">
                                 02
                             </strong>
-
 
                             <div>
 
@@ -744,13 +540,11 @@
 
                             </div>
 
-
                             <time>
-                                Amanhã
+                                Próxima
                             </time>
 
                         </div>
-
 
 
                         <div class="next-item">
@@ -758,7 +552,6 @@
                             <strong class="number green">
                                 03
                             </strong>
-
 
                             <div>
 
@@ -772,13 +565,11 @@
 
                             </div>
 
-
                             <time>
-                                Próxima
+                                Depois
                             </time>
 
                         </div>
-
 
 
                         <div class="next-item">
@@ -787,7 +578,6 @@
                                 04
                             </strong>
 
-
                             <div>
 
                                 <b>
@@ -795,18 +585,16 @@
                                 </b>
 
                                 <small>
-                                    Período Colonial do Brasil
+                                    Brasil Colonial
                                 </small>
 
                             </div>
 
-
                             <time>
-                                Próxima
+                                Depois
                             </time>
 
                         </div>
-
 
 
                         <div class="next-item">
@@ -814,7 +602,6 @@
                             <strong class="number purple">
                                 05
                             </strong>
-
 
                             <div>
 
@@ -828,16 +615,13 @@
 
                             </div>
 
-
                             <time>
-                                Próxima
+                                Depois
                             </time>
 
                         </div>
 
-
                     </div>
-
 
                 </section>
 
@@ -847,7 +631,6 @@
 
                 <section class="panel streak">
 
-
                     <h2>
                         SEQUÊNCIA DE ESTUDOS
                     </h2>
@@ -855,13 +638,11 @@
 
                     <div class="circle-progress">
 
-
                         <div>
 
-                            <strong data-sequencia>
+                            <strong id="streakCircle">
                                 0
                             </strong>
-
 
                             <span>
                                 dias
@@ -869,17 +650,15 @@
 
                         </div>
 
-
                     </div>
 
 
-                    <h3>
-                        Comece sua sequência! 🔥
+                    <h3 id="streakTitle">
+                        Bora começar! 🚔
                     </h3>
 
-
-                    <p>
-                        Estude hoje para começar.
+                    <p id="streakText">
+                        Estude hoje para iniciar sua sequência.
                     </p>
 
 
@@ -887,44 +666,43 @@
 
                         <span>
                             S
-                            <i></i>
+                            <b id="week0">•</b>
                         </span>
 
                         <span>
                             T
-                            <i></i>
+                            <b id="week1">•</b>
                         </span>
 
                         <span>
                             Q
-                            <i></i>
+                            <b id="week2">•</b>
                         </span>
 
                         <span>
                             Q
-                            <i></i>
+                            <b id="week3">•</b>
                         </span>
 
                         <span>
                             S
-                            <i></i>
+                            <b id="week4">•</b>
                         </span>
 
                         <span>
                             S
-                            <i></i>
+                            <b id="week5">•</b>
                         </span>
 
                         <span>
                             D
-                            <i></i>
+                            <b id="week6">•</b>
                         </span>
 
                     </div>
 
 
                     <div class="streak-footer">
-
 
                         <div>
 
@@ -942,15 +720,14 @@
                         <div>
 
                             <small>
-                                Estudado hoje
+                                Estudado
                             </small>
 
-                            <strong>
-                                0h 00m
+                            <strong id="streakTempo">
+                                0m
                             </strong>
 
                         </div>
-
 
                     </div>
 
@@ -958,26 +735,21 @@
                     <div class="progress green">
 
                         <div
-                            data-barra-tempo
+                            id="progressEstudo"
                             style="width:0%"
                         ></div>
 
                     </div>
 
-
                 </section>
-
 
             </div>
 
 
 
-            <!-- ==========================================
-                 DESEMPENHO
-            ========================================== -->
+            <!-- DESEMPENHO POR MATÉRIA -->
 
             <section class="panel performance">
-
 
                 <div class="panel-header">
 
@@ -985,216 +757,32 @@
                         DESEMPENHO POR MATÉRIA
                     </h2>
 
-
-                    <button>
+                    <button
+                        onclick="abrirPagina('desempenho')"
+                    >
                         Ver detalhes
                     </button>
 
                 </div>
 
 
-                <div class="subject-grid">
-
-
-                    <div class="subject-card">
-
-                        <h3>
-                            📖 Português
-                        </h3>
-
-
-                        <div class="subject-content">
-
-                            <div class="mini-circle yellow-circle">
-
-                                0%
-
-                            </div>
-
-
-                            <div>
-
-                                <p>
-                                    Acertos:
-                                    <b>
-                                        0%
-                                    </b>
-                                </p>
-
-
-                                <p>
-                                    Questões:
-                                    <b>
-                                        0
-                                    </b>
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <button>
-                            Ver matéria
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="subject-card">
-
-                        <h3>
-                            🧠 Raciocínio Lógico
-                        </h3>
-
-
-                        <div class="subject-content">
-
-                            <div class="mini-circle yellow-circle">
-
-                                0%
-
-                            </div>
-
-
-                            <div>
-
-                                <p>
-                                    Acertos:
-                                    <b>
-                                        0%
-                                    </b>
-                                </p>
-
-
-                                <p>
-                                    Questões:
-                                    <b>
-                                        0
-                                    </b>
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <button>
-                            Ver matéria
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="subject-card">
-
-                        <h3>
-                            🌎 Geografia
-                        </h3>
-
-
-                        <div class="subject-content">
-
-                            <div class="mini-circle yellow-circle">
-
-                                0%
-
-                            </div>
-
-
-                            <div>
-
-                                <p>
-                                    Acertos:
-                                    <b>
-                                        0%
-                                    </b>
-                                </p>
-
-
-                                <p>
-                                    Questões:
-                                    <b>
-                                        0
-                                    </b>
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <button>
-                            Ver matéria
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="subject-card">
-
-                        <h3>
-                            🏛️ História
-                        </h3>
-
-
-                        <div class="subject-content">
-
-                            <div class="mini-circle yellow-circle">
-
-                                0%
-
-                            </div>
-
-
-                            <div>
-
-                                <p>
-                                    Acertos:
-                                    <b>
-                                        0%
-                                    </b>
-                                </p>
-
-
-                                <p>
-                                    Questões:
-                                    <b>
-                                        0
-                                    </b>
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <button>
-                            Ver matéria
-                        </button>
-
-                    </div>
-
-
-                </div>
-
+                <div
+                    id="dashboardMaterias"
+                    class="subject-grid"
+                ></div>
 
             </section>
 
 
 
-            <!-- ==========================================
-                 PARTE INFERIOR
-            ========================================== -->
+            <!-- PARTE INFERIOR -->
 
             <div class="bottom-grid">
 
 
-                <section class="panel">
+                <!-- REVISÕES -->
 
+                <section class="panel">
 
                     <div class="panel-header">
 
@@ -1202,75 +790,27 @@
                             REVISÕES IMPORTANTES
                         </h2>
 
-
-                        <button>
+                        <button
+                            onclick="abrirPagina('revisoes')"
+                        >
                             Ver todas
                         </button>
 
                     </div>
 
 
-                    <div class="review-list">
-
-                        <div>
-
-                            <b>
-                                ✚ Crase
-                            </b>
-
-                            <small>
-                                Português
-                            </small>
-
-                            <label>
-                                Revisar hoje
-                            </label>
-
-                        </div>
-
-
-                        <div>
-
-                            <b>
-                                ✚ Regência Nominal
-                            </b>
-
-                            <small>
-                                Português
-                            </small>
-
-                            <label>
-                                Revisar amanhã
-                            </label>
-
-                        </div>
-
-
-                        <div>
-
-                            <b>
-                                ✚ Funções da Linguagem
-                            </b>
-
-                            <small>
-                                Português
-                            </small>
-
-                            <label>
-                                Em 2 dias
-                            </label>
-
-                        </div>
-
-                    </div>
-
+                    <div
+                        id="dashboardRevisoes"
+                        class="review-list"
+                    ></div>
 
                 </section>
 
 
 
-                <section class="panel">
+                <!-- SIMULADOS -->
 
+                <section class="panel">
 
                     <div class="panel-header">
 
@@ -1278,54 +818,53 @@
                             ÚLTIMOS SIMULADOS
                         </h2>
 
-
-                        <button>
+                        <button
+                            onclick="abrirPagina('simulados')"
+                        >
                             Ver todos
                         </button>
 
                     </div>
 
 
-                    <div class="simulation">
+                    <div
+                        id="dashboardSimulados"
+                        class="simulation"
+                    >
 
                         <span>
-                            🌎
+                            📝
                         </span>
-
 
                         <div>
 
                             <b>
-                                Simulado PMES — 01
+                                Nenhum simulado realizado
                             </b>
 
                             <small>
-                                Nenhum simulado realizado
+                                Seus resultados aparecerão aqui.
                             </small>
 
                         </div>
 
-
                         <strong>
-                            0%
+                            —
                         </strong>
 
                     </div>
 
-
                 </section>
 
-
             </div>
-
 
         </section>
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              AULA
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="aula"
@@ -1365,9 +904,9 @@
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              MATÉRIAS
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="materias"
@@ -1381,7 +920,7 @@
                 </h1>
 
                 <p>
-                    Conteúdo organizado conforme o edital.
+                    Conteúdo organizado para sua preparação.
                 </p>
 
             </div>
@@ -1396,9 +935,9 @@
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              QUESTÕES
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="questoes"
@@ -1438,9 +977,9 @@
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              REVISÕES
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="revisoes"
@@ -1459,13 +998,34 @@
 
             </div>
 
+
+            <div
+                id="revisoesContainer"
+                class="empty-panel"
+            >
+
+                <span>
+                    🔄
+                </span>
+
+                <h2>
+                    Nenhuma revisão pendente
+                </h2>
+
+                <p>
+                    Quando você errar questões,
+                    elas aparecerão aqui.
+                </p>
+
+            </div>
+
         </section>
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              SIMULADOS
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="simulados"
@@ -1484,13 +1044,30 @@
 
             </div>
 
+
+            <div class="empty-panel">
+
+                <span>
+                    🎯
+                </span>
+
+                <h2>
+                    Seus simulados
+                </h2>
+
+                <p>
+                    Em breve você poderá realizar simulados completos.
+                </p>
+
+            </div>
+
         </section>
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              REDAÇÃO
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="redacao"
@@ -1512,6 +1089,7 @@
 
             <textarea
                 class="redacao-area"
+                id="redacaoArea"
                 placeholder="Comece sua redação aqui..."
             ></textarea>
 
@@ -1519,9 +1097,9 @@
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              DESEMPENHO
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="desempenho"
@@ -1540,13 +1118,19 @@
 
             </div>
 
+
+            <div
+                id="desempenhoContainer"
+                class="subject-grid desempenho-grid"
+            ></div>
+
         </section>
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              RANKING
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="ranking"
@@ -1556,22 +1140,28 @@
             <div class="page-title">
 
                 <h1>
-                    Rankings
+                    🏆 Ranking
                 </h1>
 
                 <p>
-                    Compare sua evolução com seu parceiro de estudos.
+                    Veja quem está liderando a preparação.
                 </p>
 
             </div>
+
+
+            <div
+                id="rankingContainer"
+                class="ranking-container"
+            ></div>
 
         </section>
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              TAF
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="taf"
@@ -1581,7 +1171,7 @@
             <div class="page-title">
 
                 <h1>
-                    TAF
+                    🏃 TAF
                 </h1>
 
                 <p>
@@ -1590,13 +1180,31 @@
 
             </div>
 
+
+            <div class="empty-panel">
+
+                <span>
+                    🏃
+                </span>
+
+                <h2>
+                    Treinamento físico
+                </h2>
+
+                <p>
+                    Em breve teremos acompanhamento
+                    dos exercícios do TAF.
+                </p>
+
+            </div>
+
         </section>
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              CONFIGURAÇÕES
-        ========================================== -->
+        ======================================= -->
 
         <section
             id="config"
@@ -1606,7 +1214,7 @@
             <div class="page-title">
 
                 <h1>
-                    Configurações
+                    ⚙ Configurações
                 </h1>
 
                 <p>
@@ -1616,31 +1224,59 @@
             </div>
 
 
-            <div class="empty-panel">
+            <div class="config-grid">
 
-                <span>
-                    ⚙️
-                </span>
 
-                <h2>
-                    Configurações
-                </h2>
+                <div class="config-card">
 
-                <p>
-                    Em breve você poderá configurar seu perfil aqui.
-                </p>
+                    <div>
 
-                <button
-                    class="primary-btn"
-                    onclick="resetarProgresso()"
-                >
-                    ⚠️ Resetar progresso
-                </button>
+                        <strong>
+                            Perfil atual
+                        </strong>
+
+                        <p id="configPerfil">
+                            Felipe
+                        </p>
+
+                    </div>
+
+                    <button
+                        onclick="abrirModalPerfil()"
+                    >
+                        Trocar perfil
+                    </button>
+
+                </div>
+
+
+
+                <div class="config-card danger">
+
+                    <div>
+
+                        <strong>
+                            Resetar progresso
+                        </strong>
+
+                        <p>
+                            Apaga XP, nível, questões,
+                            revisões e progresso deste perfil.
+                        </p>
+
+                    </div>
+
+                    <button
+                        onclick="resetarPerfil()"
+                    >
+                        Resetar
+                    </button>
+
+                </div>
 
             </div>
 
         </section>
-
 
     </main>
 
@@ -1649,17 +1285,15 @@
 
 
 <!-- ==========================================
-     MODAL PERFIL
-========================================== -->
+     MODAL DE PERFIL
+=========================================== -->
 
 <div
     class="modal"
     id="profileModal"
 >
 
-
-    <div class="modal-content">
-
+    <div class="profile-modal">
 
         <button
             class="close-modal"
@@ -1669,40 +1303,143 @@
         </button>
 
 
-        <h2>
-            Escolha seu perfil
-        </h2>
+        <div class="profile-modal-header">
+
+            <div class="profile-modal-icon">
+                👥
+            </div>
+
+            <div>
+
+                <h2>
+                    Quem está estudando?
+                </h2>
+
+                <p>
+                    Escolha um perfil para continuar.
+                </p>
+
+            </div>
+
+        </div>
 
 
-        <button
-            class="profile-option"
-            onclick="trocarPerfil('Felipe')"
-        >
-
-            👤 Felipe
-
-        </button>
+        <div class="profiles-list">
 
 
-        <button
-            class="profile-option"
-            onclick="trocarPerfil('Primo')"
-        >
+            <!-- FELIPE -->
 
-            👤 Primo
+            <button
+                class="profile-option"
+                onclick="trocarPerfil('Felipe')"
+            >
 
-        </button>
+                <div class="profile-option-avatar">
+                    👤
+                </div>
 
+                <div class="profile-option-info">
+
+                    <strong>
+                        Felipe
+                    </strong>
+
+                    <span>
+                        Perfil de estudante
+                    </span>
+
+                    <small id="profileXPFelipe">
+                        0 XP • Nível 1
+                    </small>
+
+                </div>
+
+                <div class="profile-arrow">
+                    →
+                </div>
+
+            </button>
+
+
+
+            <!-- PRIMO -->
+
+            <button
+                class="profile-option"
+                onclick="trocarPerfil('Primo')"
+            >
+
+                <div class="profile-option-avatar primo">
+                    👤
+                </div>
+
+                <div class="profile-option-info">
+
+                    <strong>
+                        Primo
+                    </strong>
+
+                    <span>
+                        Perfil de estudante
+                    </span>
+
+                    <small id="profileXPPrimo">
+                        0 XP • Nível 1
+                    </small>
+
+                </div>
+
+                <div class="profile-arrow">
+                    →
+                </div>
+
+            </button>
+
+        </div>
+
+
+        <div class="profile-modal-footer">
+
+            🔒 Cada perfil possui seu próprio progresso.
+
+        </div>
 
     </div>
 
+</div>
+
+
+
+<!-- ==========================================
+     TOAST
+=========================================== -->
+
+<div
+    class="profile-toast"
+    id="profileToast"
+>
+
+    <div class="toast-icon">
+        ✓
+    </div>
+
+    <div>
+
+        <strong id="toastTitle">
+            Perfil carregado
+        </strong>
+
+        <span id="toastMessage">
+            Bem-vindo de volta!
+        </span>
+
+    </div>
 
 </div>
 
 
 
 <script src="script.js"></script>
-
 
 </body>
 
