@@ -101,23 +101,17 @@ function carregarDados() {
         const dados =
             JSON.parse(dadosSalvos);
 
-
         /*
-           Garante que dados antigos não
-           quebrem o sistema caso alguma
-           propriedade esteja faltando.
+            Garante que dados antigos
+            recebam novas propriedades.
         */
 
-        const dadosIniciais =
+        const dadosPadrao =
             criarDadosIniciais();
 
-
         return {
-
-            ...dadosIniciais,
-
+            ...dadosPadrao,
             ...dados
-
         };
 
     } catch (erro) {
@@ -127,16 +121,13 @@ function carregarDados() {
             erro
         );
 
-
         const novosDados =
             criarDadosIniciais();
-
 
         localStorage.setItem(
             chave,
             JSON.stringify(novosDados)
         );
-
 
         return novosDados;
 
@@ -180,7 +171,6 @@ function atualizarPerfil() {
 
     const profile =
         profiles[activeProfile];
-
 
     if (!profile) return;
 
@@ -241,16 +231,11 @@ function atualizarPerfil() {
     }
 
 
-    /*
-       Atualiza qualquer elemento que
-       esteja usando data-nivel.
-    */
-
     document
         .querySelectorAll("[data-nivel]")
-        .forEach(elemento => {
+        .forEach(element => {
 
-            elemento.textContent =
+            element.textContent =
                 dadosPerfil.nivel;
 
         });
@@ -363,20 +348,6 @@ function renderizarMaterias() {
     container.innerHTML = "";
 
 
-    if (
-        typeof materiasPMES ===
-        "undefined"
-    ) {
-
-        console.error(
-            "materiasPMES não foi carregado."
-        );
-
-        return;
-
-    }
-
-
     materiasPMES.forEach(
         materia => {
 
@@ -401,51 +372,44 @@ function renderizarMaterias() {
 
 
             card.className =
-                "subject-card";
+                "subject-card materia-card";
 
 
             card.innerHTML = `
 
-                <h3>
-                    ${materia.icone}
-                    ${materia.nome}
-                </h3>
+                <div class="materia-card-top">
 
-
-                <div class="subject-content">
-
-                    <div class="
-                        mini-circle
-                        ${
-                            progresso >= 70
-                                ? "green-circle"
-                                : "yellow-circle"
-                        }
-                    ">
-
-                        ${progresso}%
-
+                    <div
+                        class="materia-icon ${materia.cor}"
+                    >
+                        ${materia.icone}
                     </div>
-
 
                     <div>
 
-                        <p>
-                            Assuntos:
-                            <b>
-                                ${materia.assuntos.length}
-                            </b>
-                        </p>
-
+                        <h3>
+                            ${materia.nome}
+                        </h3>
 
                         <p>
-                            Concluídos:
-                            <b>
-                                ${concluidos}
-                            </b>
+                            ${materia.assuntos.length}
+                            assuntos
                         </p>
 
                     </div>
+
+                </div>
+
+
+                <div class="materia-progress-info">
+
+                    <span>
+                        Progresso
+                    </span>
+
+                    <strong>
+                        ${progresso}%
+                    </strong>
 
                 </div>
 
@@ -461,15 +425,25 @@ function renderizarMaterias() {
                 </div>
 
 
-                <button
-                    onclick="
-                        abrirMateria('${materia.id}')
-                    "
-                >
+                <div class="materia-footer">
 
-                    Ver matéria
+                    <span>
+                        ${concluidos}
+                        /
+                        ${materia.assuntos.length}
+                        concluídos
+                    </span>
 
-                </button>
+
+                    <button
+                        onclick="
+                            abrirMateria('${materia.id}')
+                        "
+                    >
+                        Ver matéria →
+                    </button>
+
+                </div>
 
             `;
 
@@ -485,77 +459,12 @@ function renderizarMaterias() {
 
 
 /* ==========================================
-   CALCULAR PROGRESSO DA MATÉRIA
-========================================== */
-
-function calcularProgressoMateria(
-    materia,
-    dados
-) {
-
-    if (
-        !materia ||
-        !materia.assuntos ||
-        materia.assuntos.length === 0
-    ) {
-
-        return 0;
-
-    }
-
-
-    let concluidos = 0;
-
-
-    materia.assuntos.forEach(
-        (assunto, index) => {
-
-            const chave =
-                `${materia.id}_assunto_${index}`;
-
-
-            if (
-                dados[chave] &&
-                dados[chave].concluido
-            ) {
-
-                concluidos++;
-
-            }
-
-        }
-    );
-
-
-    return Math.round(
-
-        (
-            concluidos /
-            materia.assuntos.length
-        ) * 100
-
-    );
-
-}
-
-
-/* ==========================================
    CONTAR ASSUNTOS CONCLUÍDOS
 ========================================== */
 
 function contarAssuntosConcluidos(
     materia
 ) {
-
-    if (
-        !materia ||
-        !materia.assuntos
-    ) {
-
-        return 0;
-
-    }
-
 
     let total = 0;
 
@@ -593,19 +502,342 @@ function abrirMateria(
     materiaId
 ) {
 
-    if (
-        typeof materiasPMES ===
-        "undefined"
-    ) {
-
-        alert(
-            "Não foi possível carregar as matérias."
+    const materia =
+        materiasPMES.find(
+            item =>
+                item.id === materiaId
         );
 
-        return;
 
-    }
+    if (!materia) return;
 
+
+    const paginaMaterias =
+        document.getElementById(
+            "materias"
+        );
+
+
+    if (!paginaMaterias) return;
+
+
+    const progresso =
+        calcularProgressoMateria(
+            materia,
+            dadosPerfil
+        );
+
+
+    paginaMaterias.innerHTML = `
+
+        <div class="materia-detalhes">
+
+
+            <button
+                class="back-button"
+                onclick="voltarMaterias()"
+            >
+                ← Voltar para matérias
+            </button>
+
+
+            <div class="materia-header">
+
+
+                <div
+                    class="
+                        materia-header-icon
+                        ${materia.cor}
+                    "
+                >
+                    ${materia.icone}
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        ${materia.nome}
+                    </h1>
+
+                    <p>
+                        Estude cada assunto e acompanhe
+                        sua evolução.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="materia-resumo">
+
+
+                <div>
+
+                    <span>
+                        Progresso
+                    </span>
+
+                    <strong id="materiaProgresso">
+                        ${progresso}%
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Assuntos
+                    </span>
+
+                    <strong>
+                        ${materia.assuntos.length}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Concluídos
+                    </span>
+
+                    <strong id="materiaConcluidos">
+                        ${contarAssuntosConcluidos(materia)}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="materia-progress-large">
+
+                <div class="progress">
+
+                    <div
+                        id="materiaBarra"
+                        style="
+                            width:${progresso}%;
+                        "
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <div class="assuntos-header">
+
+                <h2>
+                    Assuntos
+                </h2>
+
+                <span>
+                    ${materia.assuntos.length}
+                    conteúdos
+                </span>
+
+            </div>
+
+
+            <div
+                class="assuntos-list"
+                id="assuntosList"
+            >
+
+                ${materia.assuntos.map(
+                    (assunto, index) =>
+                        criarCardAssunto(
+                            materia,
+                            assunto,
+                            index
+                        )
+                ).join("")}
+
+            </div>
+
+
+        </div>
+
+    `;
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* ==========================================
+   CRIAR CARD DO ASSUNTO
+========================================== */
+
+function criarCardAssunto(
+    materia,
+    assunto,
+    index
+) {
+
+    const chave =
+        `${materia.id}_assunto_${index}`;
+
+
+    const concluido =
+        dadosPerfil[chave]?.concluido === true;
+
+
+    return `
+
+        <div
+            class="
+                assunto-card
+                ${concluido ? "concluido" : ""}
+            "
+        >
+
+
+            <div class="assunto-numero">
+
+                ${String(index + 1).padStart(2, "0")}
+
+            </div>
+
+
+            <div class="assunto-info">
+
+                <h3>
+                    ${assunto}
+                </h3>
+
+
+                <span>
+
+                    ${
+                        concluido
+                            ? "✓ Assunto concluído"
+                            : "○ Não concluído"
+                    }
+
+                </span>
+
+            </div>
+
+
+            <div class="assunto-actions">
+
+                ${
+                    concluido
+
+                    ?
+
+                    `
+                        <button
+                            class="btn-concluido"
+                            disabled
+                        >
+                            ✓ Concluído
+                        </button>
+                    `
+
+                    :
+
+                    `
+                        <button
+                            class="btn-assunto"
+                            onclick="
+                                concluirAssunto(
+                                    '${materia.id}',
+                                    ${index}
+                                )
+                            "
+                        >
+                            Marcar concluído
+                        </button>
+                    `
+
+                }
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   VOLTAR PARA MATÉRIAS
+========================================== */
+
+function voltarMaterias() {
+
+    const paginaMaterias =
+        document.getElementById(
+            "materias"
+        );
+
+
+    if (!paginaMaterias) return;
+
+
+    paginaMaterias.innerHTML = `
+
+        <div class="page-title">
+
+            <h1>
+                Matérias
+            </h1>
+
+            <p>
+                Conteúdo organizado conforme o edital.
+            </p>
+
+        </div>
+
+
+        <div
+            id="materiasContainer"
+            class="cards-container"
+        ></div>
+
+    `;
+
+
+    renderizarMaterias();
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* ==========================================
+   CONCLUIR ASSUNTO
+========================================== */
+
+function concluirAssunto(
+    materiaId,
+    assuntoIndex
+) {
 
     const materia =
         materiasPMES.find(
@@ -617,27 +849,484 @@ function abrirMateria(
     if (!materia) return;
 
 
+    const chave =
+        `${materiaId}_assunto_${assuntoIndex}`;
+
+
+    if (
+        dadosPerfil[chave]?.concluido
+    ) {
+
+        return;
+
+    }
+
+
+    dadosPerfil[chave] = {
+
+        concluido: true,
+
+        data:
+            new Date().toISOString()
+
+    };
+
+
+    /*
+       Ganho de XP
+    */
+
+    adicionarXP(
+        50,
+        false
+    );
+
+
+    salvarDados();
+
+
+    atualizarPerfil();
+
+    atualizarDashboard();
+
+
+    abrirMateria(
+        materiaId
+    );
+
+}
+
+
+/* ==========================================
+   ADICIONAR XP
+========================================== */
+
+function adicionarXP(
+    quantidade,
+    atualizar = true
+) {
+
+    dadosPerfil.xp +=
+        quantidade;
+
+
+    while (
+        dadosPerfil.xp >=
+        dadosPerfil.xpProximoNivel
+    ) {
+
+        dadosPerfil.xp -=
+            dadosPerfil.xpProximoNivel;
+
+
+        dadosPerfil.nivel++;
+
+
+        dadosPerfil.xpProximoNivel =
+            Math.round(
+                dadosPerfil.xpProximoNivel *
+                1.25
+            );
+
+    }
+
+
+    salvarDados();
+
+
+    if (atualizar) {
+
+        atualizarPerfil();
+
+        atualizarDashboard();
+
+    }
+
+}
+
+
+/* ==========================================
+   REGISTRAR QUESTÃO
+========================================== */
+
+function registrarQuestao(
+    questaoId,
+    acertou
+) {
+
+    dadosPerfil.questoesRespondidas++;
+
+
+    if (acertou) {
+
+        dadosPerfil.questoesAcertadas++;
+
+
+        adicionarXP(10);
+
+    } else {
+
+        dadosPerfil.revisoes.push({
+
+            questaoId:
+                questaoId,
+
+            data:
+                new Date().toISOString()
+
+        });
+
+
+        adicionarXP(3);
+
+    }
+
+
+    dadosPerfil.questoes[questaoId] = {
+
+        acertou:
+            acertou,
+
+        data:
+            new Date().toISOString()
+
+    };
+
+
+    salvarDados();
+
+
+    atualizarDashboard();
+
+}
+
+
+/* ==========================================
+   PROGRESSO GERAL
+========================================== */
+
+function calcularProgressoGeral() {
+
+    let total = 0;
+
+    let concluidos = 0;
+
+
+    materiasPMES.forEach(
+        materia => {
+
+            total +=
+                materia.assuntos.length;
+
+
+            materia.assuntos.forEach(
+                (assunto, index) => {
+
+                    const chave =
+                        `${materia.id}_assunto_${index}`;
+
+
+                    if (
+                        dadosPerfil[chave]?.concluido
+                    ) {
+
+                        concluidos++;
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    if (total === 0) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+
+        (
+            concluidos /
+            total
+        ) * 100
+
+    );
+
+}
+
+
+/* ==========================================
+   APROVEITAMENTO
+========================================== */
+
+function calcularAproveitamento() {
+
+    if (
+        dadosPerfil.questoesRespondidas ===
+        0
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+
+        (
+            dadosPerfil.questoesAcertadas /
+            dadosPerfil.questoesRespondidas
+        ) * 100
+
+    );
+
+}
+
+
+/* ==========================================
+   ATUALIZAR DASHBOARD
+========================================== */
+
+function atualizarDashboard() {
+
+    const progresso =
+        calcularProgressoGeral();
+
+
+    const aproveitamento =
+        calcularAproveitamento();
+
+
+    /*
+       PROGRESSO
+    */
+
+    document
+        .querySelectorAll("[data-progresso]")
+        .forEach(element => {
+
+            element.textContent =
+                `${progresso}%`;
+
+        });
+
+
+    document
+        .querySelectorAll("[data-barra-progresso]")
+        .forEach(element => {
+
+            element.style.width =
+                `${progresso}%`;
+
+        });
+
+
+    /*
+       APROVEITAMENTO
+    */
+
+    document
+        .querySelectorAll("[data-aproveitamento]")
+        .forEach(element => {
+
+            element.textContent =
+                `${aproveitamento}%`;
+
+        });
+
+
+    /*
+       XP
+    */
+
+    document
+        .querySelectorAll("[data-xp]")
+        .forEach(element => {
+
+            element.textContent =
+                dadosPerfil.xp;
+
+        });
+
+
+    /*
+       NÍVEL
+    */
+
+    document
+        .querySelectorAll("[data-nivel]")
+        .forEach(element => {
+
+            element.textContent =
+                dadosPerfil.nivel;
+
+        });
+
+
+    /*
+       SEQUÊNCIA
+    */
+
+    document
+        .querySelectorAll("[data-sequencia]")
+        .forEach(element => {
+
+            element.textContent =
+                dadosPerfil.sequencia;
+
+        });
+
+
+    /*
+       BARRA DE XP
+    */
+
+    const xpAtual =
+        dadosPerfil.xp;
+
+
+    const xpMax =
+        dadosPerfil.xpProximoNivel;
+
+
+    const porcentagemXP =
+        xpMax > 0
+            ? Math.round(
+                (xpAtual / xpMax) * 100
+            )
+            : 0;
+
+
+    document
+        .querySelectorAll("[data-barra-xp]")
+        .forEach(element => {
+
+            element.style.width =
+                `${porcentagemXP}%`;
+
+        });
+
+
     console.log(
-        "Matéria selecionada:",
-        materia.nome
+        "Progresso:",
+        progresso + "%"
     );
 
 
-    alert(
-
-        `${materia.nome}\n\n` +
-
-        `Assuntos disponíveis: ` +
-
-        `${materia.assuntos.length}\n\n` +
-
-        `A próxima etapa será abrir ` +
-
-        `os assuntos, materiais, aulas ` +
-
-        `e questões.`
-
+    console.log(
+        "Aproveitamento:",
+        aproveitamento + "%"
     );
+
+
+    console.log(
+        "XP:",
+        dadosPerfil.xp
+    );
+
+
+    console.log(
+        "Nível:",
+        dadosPerfil.nivel
+    );
+
+}
+
+
+/* ==========================================
+   REDAÇÃO
+========================================== */
+
+const redacao =
+    document.querySelector(
+        ".redacao-area"
+    );
+
+
+if (redacao) {
+
+    const textoSalvo =
+        carregarProgresso(
+            "redacao"
+        );
+
+
+    if (textoSalvo) {
+
+        redacao.value =
+            textoSalvo;
+
+    }
+
+
+    redacao.addEventListener(
+        "input",
+        () => {
+
+            salvarProgresso(
+                "redacao",
+                redacao.value
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   SALVAR PROGRESSO
+========================================== */
+
+function salvarProgresso(
+    chave,
+    valor
+) {
+
+    dadosPerfil[chave] =
+        valor;
+
+
+    salvarDados();
+
+}
+
+
+/* ==========================================
+   CARREGAR PROGRESSO
+========================================== */
+
+function carregarProgresso(
+    chave
+) {
+
+    return dadosPerfil[chave];
+
+}
+
+
+/* ==========================================
+   ABRIR AULA
+========================================== */
+
+function abrirAula() {
+
+    const aulaMenu =
+        document.querySelector(
+            '[data-page="aula"]'
+        );
+
+
+    if (aulaMenu) {
+
+        aulaMenu.click();
+
+    }
 
 }
 
@@ -777,8 +1466,6 @@ function trocarPerfil(
 
     renderizarMaterias();
 
-    carregarRedacao();
-
     fecharModal();
 
 }
@@ -810,554 +1497,7 @@ if (profileModal) {
 
 
 /* ==========================================
-   ABRIR AULA
-========================================== */
-
-function abrirAula() {
-
-    const aulaMenu =
-        document.querySelector(
-            '[data-page="aula"]'
-        );
-
-
-    if (aulaMenu) {
-
-        aulaMenu.click();
-
-    }
-
-}
-
-
-/* ==========================================
-   SALVAR PROGRESSO
-========================================== */
-
-function salvarProgresso(
-    chave,
-    valor
-) {
-
-    dadosPerfil[chave] =
-        valor;
-
-
-    salvarDados();
-
-
-    atualizarDashboard();
-
-}
-
-
-/* ==========================================
-   CARREGAR PROGRESSO
-========================================== */
-
-function carregarProgresso(
-    chave
-) {
-
-    return dadosPerfil[chave];
-
-}
-
-
-/* ==========================================
-   CONCLUIR ASSUNTO
-========================================== */
-
-function concluirAssunto(
-    materiaId,
-    assuntoIndex
-) {
-
-    const chave =
-        `${materiaId}_assunto_${assuntoIndex}`;
-
-
-    dadosPerfil[chave] = {
-
-        concluido: true,
-
-        data:
-            new Date().toISOString()
-
-    };
-
-
-    salvarDados();
-
-
-    atualizarDashboard();
-
-    renderizarMaterias();
-
-}
-
-
-/* ==========================================
-   ADICIONAR XP
-========================================== */
-
-function adicionarXP(
-    quantidade
-) {
-
-    dadosPerfil.xp +=
-        quantidade;
-
-
-    while (
-        dadosPerfil.xp >=
-        dadosPerfil.xpProximoNivel
-    ) {
-
-        dadosPerfil.xp -=
-            dadosPerfil.xpProximoNivel;
-
-
-        dadosPerfil.nivel++;
-
-
-        dadosPerfil.xpProximoNivel =
-            Math.round(
-
-                dadosPerfil.xpProximoNivel *
-                1.25
-
-            );
-
-    }
-
-
-    salvarDados();
-
-
-    atualizarPerfil();
-
-    atualizarDashboard();
-
-}
-
-
-/* ==========================================
-   REGISTRAR QUESTÃO
-========================================== */
-
-function registrarQuestao(
-    questaoId,
-    acertou
-) {
-
-    dadosPerfil.questoesRespondidas++;
-
-
-    if (acertou) {
-
-        dadosPerfil.questoesAcertadas++;
-
-        adicionarXP(10);
-
-    } else {
-
-        dadosPerfil.revisoes.push({
-
-            questaoId:
-                questaoId,
-
-            data:
-                new Date().toISOString()
-
-        });
-
-        adicionarXP(3);
-
-    }
-
-
-    dadosPerfil.questoes[questaoId] = {
-
-        acertou:
-            acertou,
-
-        data:
-            new Date().toISOString()
-
-    };
-
-
-    salvarDados();
-
-
-    atualizarDashboard();
-
-}
-
-
-/* ==========================================
-   PROGRESSO GERAL DO EDITAL
-========================================== */
-
-function calcularProgressoGeral() {
-
-    let total = 0;
-
-    let concluidos = 0;
-
-
-    if (
-        typeof materiasPMES ===
-        "undefined"
-    ) {
-
-        return 0;
-
-    }
-
-
-    materiasPMES.forEach(
-        materia => {
-
-            if (
-                !materia.assuntos
-            ) return;
-
-
-            materia.assuntos.forEach(
-                (assunto, index) => {
-
-                    total++;
-
-
-                    const chave =
-                        `${materia.id}_assunto_${index}`;
-
-
-                    if (
-                        dadosPerfil[chave] &&
-                        dadosPerfil[chave].concluido
-                    ) {
-
-                        concluidos++;
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    if (total === 0) {
-
-        return 0;
-
-    }
-
-
-    return Math.round(
-
-        (
-            concluidos /
-            total
-        ) * 100
-
-    );
-
-}
-
-
-/* ==========================================
-   APROVEITAMENTO
-========================================== */
-
-function calcularAproveitamento() {
-
-    if (
-        dadosPerfil.questoesRespondidas ===
-        0
-    ) {
-
-        return 0;
-
-    }
-
-
-    return Math.round(
-
-        (
-
-            dadosPerfil.questoesAcertadas /
-
-            dadosPerfil.questoesRespondidas
-
-        ) * 100
-
-    );
-
-}
-
-
-/* ==========================================
-   ATUALIZAR DASHBOARD
-========================================== */
-
-function atualizarDashboard() {
-
-    const progresso =
-        calcularProgressoGeral();
-
-
-    const aproveitamento =
-        calcularAproveitamento();
-
-
-    /*
-       Elementos que usam data-progresso
-    */
-
-    document
-        .querySelectorAll(
-            "[data-progresso]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    `${progresso}%`;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-aproveitamento
-    */
-
-    document
-        .querySelectorAll(
-            "[data-aproveitamento]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    `${aproveitamento}%`;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-xp
-    */
-
-    document
-        .querySelectorAll(
-            "[data-xp]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    dadosPerfil.xp;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-nivel
-    */
-
-    document
-        .querySelectorAll(
-            "[data-nivel]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    dadosPerfil.nivel;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-questoes
-    */
-
-    document
-        .querySelectorAll(
-            "[data-questoes]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    dadosPerfil.questoesRespondidas;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-acertos
-    */
-
-    document
-        .querySelectorAll(
-            "[data-acertos]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    dadosPerfil.questoesAcertadas;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-tempo
-    */
-
-    document
-        .querySelectorAll(
-            "[data-tempo]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    dadosPerfil.tempoEstudo;
-
-            }
-        );
-
-
-    /*
-       Elementos que usam data-sequencia
-    */
-
-    document
-        .querySelectorAll(
-            "[data-sequencia]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.textContent =
-                    dadosPerfil.sequencia;
-
-            }
-        );
-
-
-    /*
-       Atualiza barras de progresso
-    */
-
-    document
-        .querySelectorAll(
-            "[data-barra-progresso]"
-        )
-        .forEach(
-            elemento => {
-
-                elemento.style.width =
-                    `${progresso}%`;
-
-            }
-        );
-
-
-    console.log(
-        "Progresso:",
-        progresso + "%"
-    );
-
-
-    console.log(
-        "Aproveitamento:",
-        aproveitamento + "%"
-    );
-
-
-    console.log(
-        "XP:",
-        dadosPerfil.xp
-    );
-
-
-    console.log(
-        "Nível:",
-        dadosPerfil.nivel
-    );
-
-}
-
-
-/* ==========================================
-   REDAÇÃO
-========================================== */
-
-function carregarRedacao() {
-
-    const redacao =
-        document.querySelector(
-            ".redacao-area"
-        );
-
-
-    if (!redacao) return;
-
-
-    const textoSalvo =
-        carregarProgresso(
-            "redacao"
-        );
-
-
-    redacao.value =
-        textoSalvo || "";
-
-}
-
-
-const redacao =
-    document.querySelector(
-        ".redacao-area"
-    );
-
-
-if (redacao) {
-
-    carregarRedacao();
-
-
-    redacao.addEventListener(
-        "input",
-        () => {
-
-            salvarProgresso(
-                "redacao",
-                redacao.value
-            );
-
-        }
-    );
-
-}
-
-
-/* ==========================================
-   RESETAR PROGRESSO DO PERFIL
+   RESETAR PROGRESSO
 ========================================== */
 
 function resetarProgresso() {
@@ -1367,25 +1507,15 @@ function resetarProgresso() {
 
             "⚠️ ATENÇÃO!\n\n" +
 
-            "Isso vai apagar TODO o progresso " +
+            `Isso vai apagar todo o progresso do perfil ${activeProfile}.\n\n` +
 
-            `do perfil ${activeProfile}.\n\n` +
-
-            "• XP\n" +
-
-            "• Nível\n" +
-
-            "• Questões\n" +
-
-            "• Assuntos concluídos\n" +
-
-            "• Revisões\n" +
-
-            "• Redação\n" +
-
-            "• Tempo de estudo\n" +
-
-            "• Sequência\n\n" +
+            "XP\n" +
+            "Nível\n" +
+            "Questões\n" +
+            "Assuntos concluídos\n" +
+            "Revisões\n" +
+            "Redação\n" +
+            "Tempo de estudo\n\n" +
 
             "Deseja realmente começar do ZERO?"
 
@@ -1395,25 +1525,12 @@ function resetarProgresso() {
     if (!confirmar) return;
 
 
-    /*
-       Cria um perfil completamente novo.
-    */
-
     dadosPerfil =
         criarDadosIniciais();
 
 
-    /*
-       Salva o perfil zerado.
-    */
-
     salvarDados();
 
-
-    /*
-       Atualiza todas as partes
-       do sistema.
-    */
 
     atualizarPerfil();
 
@@ -1421,35 +1538,33 @@ function resetarProgresso() {
 
     renderizarMaterias();
 
-    carregarRedacao();
-
 
     /*
-       Garante que qualquer campo
-       de redação seja limpo.
+       Se estiver dentro de uma matéria,
+       volta para a lista.
     */
 
-    const campoRedacao =
-        document.querySelector(
-            ".redacao-area"
+    const paginaMaterias =
+        document.getElementById(
+            "materias"
         );
 
 
-    if (campoRedacao) {
+    if (
+        paginaMaterias &&
+        paginaMaterias.classList.contains(
+            "active-page"
+        )
+    ) {
 
-        campoRedacao.value = "";
+        voltarMaterias();
 
     }
 
 
     alert(
-
-        "✅ PROGRESSO RESETADO!\n\n" +
-
-        `O perfil ${activeProfile} ` +
-
-        "começou novamente do ZERO."
-
+        "✅ Progresso resetado!\n\n" +
+        "O perfil começou do zero."
     );
 
 }
@@ -1464,8 +1579,6 @@ atualizarPerfil();
 atualizarDashboard();
 
 renderizarMaterias();
-
-carregarRedacao();
 
 
 console.log(
