@@ -1,43 +1,87 @@
+/* ==========================================
+   NSS-PMES
+   ESTRUTURA DE MATÉRIAS
+========================================== */
+
 const materiasPMES = [
 
     {
-        id: 1,
+        id: "portugues",
         nome: "Língua Portuguesa",
         icone: "📖",
         cor: "purple",
-        progresso: 18
+        progresso: 0,
+
+        assuntos: [
+            "Interpretação de textos",
+            "Compreensão textual",
+            "Ortografia",
+            "Acentuação gráfica",
+            "Classes de palavras",
+            "Pronomes",
+            "Verbos",
+            "Concordância verbal",
+            "Concordância nominal",
+            "Regência verbal",
+            "Regência nominal",
+            "Crase",
+            "Pontuação",
+            "Sintaxe",
+            "Semântica"
+        ]
     },
 
     {
-        id: 2,
+        id: "raciocinio-logico",
         nome: "Raciocínio Lógico",
         icone: "🧠",
         cor: "blue",
-        progresso: 12
+        progresso: 0,
+
+        assuntos: [
+            "Proposições",
+            "Conectivos lógicos",
+            "Tabela-verdade",
+            "Negação",
+            "Equivalências lógicas",
+            "Implicação lógica",
+            "Argumentação lógica",
+            "Conjuntos",
+            "Problemas lógicos",
+            "Sequências"
+        ]
     },
 
     {
-        id: 3,
-        nome: "Geografia",
-        icone: "🌎",
-        cor: "green",
-        progresso: 10
-    },
-
-    {
-        id: 4,
-        nome: "História",
-        icone: "🏛️",
-        cor: "yellow",
-        progresso: 8
-    },
-
-    {
-        id: 5,
+        id: "matematica",
         nome: "Matemática",
         icone: "🔢",
         cor: "purple",
-        progresso: 15
-    }
+        progresso: 0,
 
-];
+        assuntos: [
+            "Operações fundamentais",
+            "Frações",
+            "Números inteiros",
+            "Números naturais",
+            "Números racionais",
+            "Razão e proporção",
+            "Regra de três",
+            "Porcentagem",
+            "Equações",
+            "Sistemas de equações",
+            "Geometria",
+            "Área e perímetro",
+            "Média aritmética"
+        ]
+    },
+
+    {
+        id: "geografia",
+        nome: "Geografia",
+        icone: "🌎",
+        cor: "green",
+        progresso: 0,
+
+        assuntos: [
+            "Localização geográfica",
