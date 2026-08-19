@@ -11,11 +11,20 @@
 const profiles = {
 
     Felipe: {
-        name: "Felipe"
+
+        name: "Felipe",
+
+        avatar: "👤"
+
     },
 
+
     Primo: {
-        name: "Primo"
+
+        name: "Primo",
+
+        avatar: "👤"
+
     }
 
 };
@@ -26,11 +35,13 @@ const profiles = {
 ========================================== */
 
 let activeProfile =
-    localStorage.getItem("nss_pmes_profile") || "Felipe";
+    localStorage.getItem(
+        "nss_pmes_profile"
+    ) || "Felipe";
 
 
 /* ==========================================
-   DADOS PADRÃO
+   DADOS INICIAIS
 ========================================== */
 
 function criarDadosIniciais() {
@@ -61,7 +72,9 @@ function criarDadosIniciais() {
 
         revisoes: [],
 
-        redacao: ""
+        redacao: "",
+
+        historicoEstudo: {}
 
     };
 
@@ -77,6 +90,7 @@ function carregarDados() {
     const chave =
         `nss_${activeProfile}`;
 
+
     const dadosSalvos =
         localStorage.getItem(chave);
 
@@ -86,10 +100,17 @@ function carregarDados() {
         const novosDados =
             criarDadosIniciais();
 
+
         localStorage.setItem(
+
             chave,
-            JSON.stringify(novosDados)
+
+            JSON.stringify(
+                novosDados
+            )
+
         );
+
 
         return novosDados;
 
@@ -99,19 +120,19 @@ function carregarDados() {
     try {
 
         const dados =
-            JSON.parse(dadosSalvos);
+            JSON.parse(
+                dadosSalvos
+            );
 
-        /*
-            Garante que dados antigos
-            recebam novas propriedades.
-        */
 
-        const dadosPadrao =
-            criarDadosIniciais();
+        /* Garante compatibilidade */
 
         return {
-            ...dadosPadrao,
+
+            ...criarDadosIniciais(),
+
             ...dados
+
         };
 
     } catch (erro) {
@@ -121,13 +142,21 @@ function carregarDados() {
             erro
         );
 
+
         const novosDados =
             criarDadosIniciais();
 
+
         localStorage.setItem(
+
             chave,
-            JSON.stringify(novosDados)
+
+            JSON.stringify(
+                novosDados
+            )
+
         );
+
 
         return novosDados;
 
@@ -145,7 +174,7 @@ let dadosPerfil =
 
 
 /* ==========================================
-   SALVAR DADOS
+   SALVAR
 ========================================== */
 
 function salvarDados() {
@@ -164,6 +193,189 @@ function salvarDados() {
 
 
 /* ==========================================
+   ELEMENTOS
+========================================== */
+
+const profileModal =
+    document.getElementById(
+        "profileModal"
+    );
+
+
+const switchProfile =
+    document.getElementById(
+        "switchProfile"
+    );
+
+
+const profileSelector =
+    document.getElementById(
+        "profileSelector"
+    );
+
+
+const topProfile =
+    document.getElementById(
+        "topProfile"
+    );
+
+
+/* ==========================================
+   NAVEGAÇÃO
+========================================== */
+
+const menuItems =
+    document.querySelectorAll(
+        ".menu-item"
+    );
+
+
+const pages =
+    document.querySelectorAll(
+        ".page"
+    );
+
+
+menuItems.forEach(
+    item => {
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                const pageId =
+                    item.dataset.page;
+
+
+                abrirPagina(
+                    pageId
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* ==========================================
+   ABRIR PÁGINA
+========================================== */
+
+function abrirPagina(
+    pageId
+) {
+
+    menuItems.forEach(
+        item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+
+            if (
+                item.dataset.page ===
+                pageId
+            ) {
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+    );
+
+
+    pages.forEach(
+        page => {
+
+            page.classList.remove(
+                "active-page"
+            );
+
+        }
+    );
+
+
+    const pagina =
+        document.getElementById(
+            pageId
+        );
+
+
+    if (pagina) {
+
+        pagina.classList.add(
+            "active-page"
+        );
+
+    }
+
+
+    if (
+        pageId === "materias"
+    ) {
+
+        renderizarMaterias();
+
+    }
+
+
+    if (
+        pageId === "desempenho"
+    ) {
+
+        renderizarDesempenho();
+
+    }
+
+
+    if (
+        pageId === "ranking"
+    ) {
+
+        renderizarRanking();
+
+    }
+
+
+    if (
+        pageId === "revisoes"
+    ) {
+
+        renderizarRevisoes();
+
+    }
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* ==========================================
+   ABRIR AULA
+========================================== */
+
+function abrirAula() {
+
+    abrirPagina(
+        "aula"
+    );
+
+}
+
+
+/* ==========================================
    ATUALIZAR PERFIL
 ========================================== */
 
@@ -171,6 +383,7 @@ function atualizarPerfil() {
 
     const profile =
         profiles[activeProfile];
+
 
     if (!profile) return;
 
@@ -193,9 +406,33 @@ function atualizarPerfil() {
         );
 
 
+    const topLevel =
+        document.getElementById(
+            "topLevel"
+        );
+
+
     const welcome =
         document.getElementById(
             "welcome"
+        );
+
+
+    const sidebarAvatar =
+        document.getElementById(
+            "sidebarAvatar"
+        );
+
+
+    const topAvatar =
+        document.getElementById(
+            "topAvatar"
+        );
+
+
+    const configPerfil =
+        document.getElementById(
+            "configPerfil"
         );
 
 
@@ -223,6 +460,14 @@ function atualizarPerfil() {
     }
 
 
+    if (topLevel) {
+
+        topLevel.textContent =
+            `Nível ${dadosPerfil.nivel}`;
+
+    }
+
+
     if (welcome) {
 
         welcome.textContent =
@@ -231,103 +476,797 @@ function atualizarPerfil() {
     }
 
 
-    document
-        .querySelectorAll("[data-nivel]")
-        .forEach(element => {
+    if (sidebarAvatar) {
 
-            element.textContent =
-                dadosPerfil.nivel;
+        sidebarAvatar.textContent =
+            profile.avatar;
 
-        });
+    }
+
+
+    if (topAvatar) {
+
+        topAvatar.textContent =
+            profile.avatar;
+
+    }
+
+
+    if (configPerfil) {
+
+        configPerfil.textContent =
+            profile.name;
+
+    }
 
 }
 
 
 /* ==========================================
-   NAVEGAÇÃO
+   PROGRESSO GERAL
 ========================================== */
 
-const menuItems =
-    document.querySelectorAll(
-        ".menu-item"
-    );
+function calcularProgressoGeral() {
+
+    let total = 0;
+
+    let concluidos = 0;
 
 
-const pages =
-    document.querySelectorAll(
-        ".page"
-    );
+    if (
+        typeof materiasPMES ===
+        "undefined"
+    ) {
+
+        return 0;
+
+    }
 
 
-menuItems.forEach(item => {
-
-    item.addEventListener(
-        "click",
-        () => {
-
-            const pageId =
-                item.dataset.page;
-
-
-            menuItems.forEach(btn => {
-
-                btn.classList.remove(
-                    "active"
-                );
-
-            });
-
-
-            item.classList.add(
-                "active"
-            );
-
-
-            pages.forEach(page => {
-
-                page.classList.remove(
-                    "active-page"
-                );
-
-            });
-
-
-            const selected =
-                document.getElementById(
-                    pageId
-                );
-
-
-            if (selected) {
-
-                selected.classList.add(
-                    "active-page"
-                );
-
-            }
-
+    materiasPMES.forEach(
+        materia => {
 
             if (
-                pageId === "materias"
-            ) {
-
-                renderizarMaterias();
-
-            }
+                !materia.assuntos
+            ) return;
 
 
-            window.scrollTo({
+            materia.assuntos.forEach(
+                (assunto, index) => {
 
-                top: 0,
+                    total++;
 
-                behavior: "smooth"
 
-            });
+                    const chave =
+                        `${materia.id}_assunto_${index}`;
+
+
+                    if (
+                        dadosPerfil[chave] &&
+                        dadosPerfil[chave].concluido
+                    ) {
+
+                        concluidos++;
+
+                    }
+
+                }
+            );
 
         }
     );
 
-});
+
+    if (
+        total === 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+
+        (
+            concluidos /
+            total
+        ) * 100
+
+    );
+
+}
+
+
+/* ==========================================
+   APROVEITAMENTO
+========================================== */
+
+function calcularAproveitamento() {
+
+    if (
+        dadosPerfil.questoesRespondidas <=
+        0
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+
+        (
+            dadosPerfil.questoesAcertadas /
+            dadosPerfil.questoesRespondidas
+        ) * 100
+
+    );
+
+}
+
+
+/* ==========================================
+   FORMATAR TEMPO
+========================================== */
+
+function formatarTempo(
+    minutos
+) {
+
+    minutos =
+        Number(minutos) || 0;
+
+
+    const horas =
+        Math.floor(
+            minutos / 60
+        );
+
+
+    const mins =
+        minutos % 60;
+
+
+    if (
+        horas === 0
+    ) {
+
+        return `${mins}m`;
+
+    }
+
+
+    if (
+        mins === 0
+    ) {
+
+        return `${horas}h`;
+
+    }
+
+
+    return `${horas}h ${mins}m`;
+
+}
+
+
+/* ==========================================
+   ATUALIZAR DASHBOARD
+========================================== */
+
+function atualizarDashboard() {
+
+    const progresso =
+        calcularProgressoGeral();
+
+
+    const aproveitamento =
+        calcularAproveitamento();
+
+
+    const statSequencia =
+        document.getElementById(
+            "statSequencia"
+        );
+
+
+    const statTempo =
+        document.getElementById(
+            "statTempo"
+        );
+
+
+    const statAproveitamento =
+        document.getElementById(
+            "statAproveitamento"
+        );
+
+
+    const statProgresso =
+        document.getElementById(
+            "statProgresso"
+        );
+
+
+    const statXP =
+        document.getElementById(
+            "statXP"
+        );
+
+
+    const statNivel =
+        document.getElementById(
+            "statNivel"
+        );
+
+
+    const progressEdital =
+        document.getElementById(
+            "progressEdital"
+        );
+
+
+    const progressXP =
+        document.getElementById(
+            "progressXP"
+        );
+
+
+    if (statSequencia) {
+
+        statSequencia.innerHTML =
+            `${dadosPerfil.sequencia}
+             <small>dias</small>`;
+
+    }
+
+
+    if (statTempo) {
+
+        statTempo.textContent =
+            formatarTempo(
+                dadosPerfil.tempoEstudo
+            );
+
+    }
+
+
+    if (statAproveitamento) {
+
+        statAproveitamento.textContent =
+            `${aproveitamento}%`;
+
+    }
+
+
+    if (statProgresso) {
+
+        statProgresso.textContent =
+            `${progresso}%`;
+
+    }
+
+
+    if (statXP) {
+
+        statXP.textContent =
+            dadosPerfil.xp;
+
+    }
+
+
+    if (statNivel) {
+
+        statNivel.textContent =
+            `Nível ${dadosPerfil.nivel}`;
+
+    }
+
+
+    if (progressEdital) {
+
+        progressEdital.style.width =
+            `${progresso}%`;
+
+    }
+
+
+    const percentualXP =
+
+        Math.min(
+
+            100,
+
+            Math.round(
+
+                (
+                    dadosPerfil.xp /
+                    dadosPerfil.xpProximoNivel
+                ) * 100
+
+            )
+
+        );
+
+
+    if (progressXP) {
+
+        progressXP.style.width =
+            `${percentualXP}%`;
+
+    }
+
+
+    atualizarSequencia();
+
+
+    renderizarDashboardMaterias();
+
+
+    renderizarRevisoesDashboard();
+
+}
+
+
+/* ==========================================
+   SEQUÊNCIA
+========================================== */
+
+function atualizarSequencia() {
+
+    const sequencia =
+        dadosPerfil.sequencia || 0;
+
+
+    const statTexto =
+        document.getElementById(
+            "statSequenciaTexto"
+        );
+
+
+    const circle =
+        document.getElementById(
+            "streakCircle"
+        );
+
+
+    const title =
+        document.getElementById(
+            "streakTitle"
+        );
+
+
+    const text =
+        document.getElementById(
+            "streakText"
+        );
+
+
+    const tempo =
+        document.getElementById(
+            "streakTempo"
+        );
+
+
+    const progress =
+        document.getElementById(
+            "progressEstudo"
+        );
+
+
+    if (circle) {
+
+        circle.textContent =
+            sequencia;
+
+    }
+
+
+    if (tempo) {
+
+        tempo.textContent =
+            formatarTempo(
+                dadosPerfil.tempoEstudo
+            );
+
+    }
+
+
+    if (statTexto) {
+
+        if (
+            sequencia >= 7
+        ) {
+
+            statTexto.textContent =
+                "🔥 Excelente!";
+
+            statTexto.className =
+                "orange";
+
+        } else if (
+            sequencia > 0
+        ) {
+
+            statTexto.textContent =
+                "Continue firme!";
+
+        } else {
+
+            statTexto.textContent =
+                "Comece hoje!";
+
+        }
+
+    }
+
+
+    if (title) {
+
+        if (
+            sequencia >= 7
+        ) {
+
+            title.textContent =
+                "Parabéns! 🔥";
+
+        } else if (
+            sequencia > 0
+        ) {
+
+            title.textContent =
+                "Boa sequência!";
+
+        } else {
+
+            title.textContent =
+                "Bora começar! 🚔";
+
+        }
+
+    }
+
+
+    if (text) {
+
+        if (
+            sequencia > 0
+        ) {
+
+            text.textContent =
+                "Mantenha a disciplina!";
+
+        } else {
+
+            text.textContent =
+                "Estude hoje para iniciar sua sequência.";
+
+        }
+
+    }
+
+
+    if (progress) {
+
+        const hoje =
+            dadosPerfil.tempoEstudo || 0;
+
+
+        const percentual =
+            Math.min(
+
+                100,
+
+                Math.round(
+                    (hoje / 90) * 100
+                )
+
+            );
+
+
+        progress.style.width =
+            `${percentual}%`;
+
+    }
+
+}
+
+
+/* ==========================================
+   REGISTRAR ESTUDO
+========================================== */
+
+function registrarEstudo(
+    minutos
+) {
+
+    minutos =
+        Number(minutos) || 0;
+
+
+    if (
+        minutos <= 0
+    ) return;
+
+
+    dadosPerfil.tempoEstudo +=
+        minutos;
+
+
+    const hoje =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+    dadosPerfil.historicoEstudo[hoje] =
+        true;
+
+
+    atualizarSequenciaAutomaticamente();
+
+
+    salvarDados();
+
+
+    atualizarPerfil();
+
+    atualizarDashboard();
+
+
+    mostrarToast(
+
+        "Estudo registrado!",
+
+        `+${minutos} minutos de estudo.`
+
+    );
+
+}
+
+
+/* ==========================================
+   SEQUÊNCIA AUTOMÁTICA
+========================================== */
+
+function atualizarSequenciaAutomaticamente() {
+
+    const hoje =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+    if (
+        dadosPerfil.ultimaDataEstudo ===
+        hoje
+    ) {
+
+        return;
+
+    }
+
+
+    const ontemDate =
+        new Date();
+
+
+    ontemDate.setDate(
+        ontemDate.getDate() - 1
+    );
+
+
+    const ontem =
+        ontemDate
+            .toISOString()
+            .split("T")[0];
+
+
+    if (
+        dadosPerfil.ultimaDataEstudo ===
+        ontem
+    ) {
+
+        dadosPerfil.sequencia++;
+
+    } else {
+
+        dadosPerfil.sequencia = 1;
+
+    }
+
+
+    dadosPerfil.ultimaDataEstudo =
+        hoje;
+
+}
+
+
+/* ==========================================
+   ADICIONAR XP
+========================================== */
+
+function adicionarXP(
+    quantidade
+) {
+
+    quantidade =
+        Number(quantidade) || 0;
+
+
+    if (
+        quantidade <= 0
+    ) return;
+
+
+    dadosPerfil.xp +=
+        quantidade;
+
+
+    while (
+
+        dadosPerfil.xp >=
+        dadosPerfil.xpProximoNivel
+
+    ) {
+
+        dadosPerfil.xp -=
+            dadosPerfil.xpProximoNivel;
+
+
+        dadosPerfil.nivel++;
+
+
+        dadosPerfil.xpProximoNivel =
+            Math.round(
+
+                dadosPerfil.xpProximoNivel *
+                1.25
+
+            );
+
+    }
+
+
+    salvarDados();
+
+
+    atualizarPerfil();
+
+    atualizarDashboard();
+
+}
+
+
+/* ==========================================
+   CONCLUIR ASSUNTO
+========================================== */
+
+function concluirAssunto(
+    materiaId,
+    assuntoIndex
+) {
+
+    const chave =
+        `${materiaId}_assunto_${assuntoIndex}`;
+
+
+    if (
+        dadosPerfil[chave]?.concluido
+    ) {
+
+        return;
+
+    }
+
+
+    dadosPerfil[chave] = {
+
+        concluido: true,
+
+        data:
+            new Date().toISOString()
+
+    };
+
+
+    dadosPerfil.assuntosConcluidos[
+        chave
+    ] = true;
+
+
+    adicionarXP(50);
+
+
+    salvarDados();
+
+
+    atualizarDashboard();
+
+
+    renderizarMaterias();
+
+
+    mostrarToast(
+
+        "Assunto concluído!",
+
+        "+50 XP adicionados ao seu perfil."
+
+    );
+
+}
+
+
+/* ==========================================
+   REGISTRAR QUESTÃO
+========================================== */
+
+function registrarQuestao(
+    questaoId,
+    acertou
+) {
+
+    dadosPerfil.questoesRespondidas++;
+
+
+    if (
+        acertou
+    ) {
+
+        dadosPerfil.questoesAcertadas++;
+
+        adicionarXP(10);
+
+    } else {
+
+        dadosPerfil.revisoes.push({
+
+            questaoId:
+                questaoId,
+
+            data:
+                new Date().toISOString()
+
+        });
+
+
+        adicionarXP(3);
+
+    }
+
+
+    dadosPerfil.questoes[questaoId] = {
+
+        acertou:
+            acertou,
+
+        data:
+            new Date().toISOString()
+
+    };
+
+
+    salvarDados();
+
+
+    atualizarDashboard();
+
+
+    mostrarToast(
+
+        acertou
+            ? "Questão correta! 🎯"
+            : "Questão errada! 📚",
+
+        acertou
+            ? "+10 XP"
+            : "+3 XP e revisão criada."
+
+    );
+
+}
 
 
 /* ==========================================
@@ -351,7 +1290,6 @@ function renderizarMaterias() {
     materiasPMES.forEach(
         materia => {
 
-
             const progresso =
                 calcularProgressoMateria(
                     materia,
@@ -372,44 +1310,48 @@ function renderizarMaterias() {
 
 
             card.className =
-                "subject-card materia-card";
+                "subject-card";
 
 
             card.innerHTML = `
 
-                <div class="materia-card-top">
+                <h3>
+                    ${materia.icone}
+                    ${materia.nome}
+                </h3>
 
-                    <div
-                        class="materia-icon ${materia.cor}"
-                    >
-                        ${materia.icone}
+                <div class="subject-content">
+
+                    <div class="
+                        mini-circle
+                        ${
+                            progresso >= 70
+                                ? "green-circle"
+                                : "yellow-circle"
+                        }
+                    ">
+
+                        ${progresso}%
+
                     </div>
 
                     <div>
 
-                        <h3>
-                            ${materia.nome}
-                        </h3>
+                        <p>
+                            Assuntos:
+                            <b>
+                                ${materia.assuntos.length}
+                            </b>
+                        </p>
 
                         <p>
-                            ${materia.assuntos.length}
-                            assuntos
+                            Concluídos:
+                            <b>
+                                ${concluidos}
+                            </b>
                         </p>
 
                     </div>
-
-                </div>
-
-
-                <div class="materia-progress-info">
-
-                    <span>
-                        Progresso
-                    </span>
-
-                    <strong>
-                        ${progresso}%
-                    </strong>
 
                 </div>
 
@@ -425,25 +1367,15 @@ function renderizarMaterias() {
                 </div>
 
 
-                <div class="materia-footer">
+                <button
+                    onclick="
+                        abrirMateria('${materia.id}')
+                    "
+                >
 
-                    <span>
-                        ${concluidos}
-                        /
-                        ${materia.assuntos.length}
-                        concluídos
-                    </span>
+                    Ver matéria
 
-
-                    <button
-                        onclick="
-                            abrirMateria('${materia.id}')
-                        "
-                    >
-                        Ver matéria →
-                    </button>
-
-                </div>
+                </button>
 
             `;
 
@@ -459,7 +1391,7 @@ function renderizarMaterias() {
 
 
 /* ==========================================
-   CONTAR ASSUNTOS CONCLUÍDOS
+   CONTAR ASSUNTOS
 ========================================== */
 
 function contarAssuntosConcluidos(
@@ -512,765 +1444,383 @@ function abrirMateria(
     if (!materia) return;
 
 
-    const paginaMaterias =
-        document.getElementById(
-            "materias"
-        );
-
-
-    if (!paginaMaterias) return;
-
-
-    const progresso =
-        calcularProgressoMateria(
-            materia,
-            dadosPerfil
-        );
-
-
-    paginaMaterias.innerHTML = `
-
-        <div class="materia-detalhes">
-
-
-            <button
-                class="back-button"
-                onclick="voltarMaterias()"
-            >
-                ← Voltar para matérias
-            </button>
-
-
-            <div class="materia-header">
-
-
-                <div
-                    class="
-                        materia-header-icon
-                        ${materia.cor}
-                    "
-                >
-                    ${materia.icone}
-                </div>
-
-
-                <div>
-
-                    <h1>
-                        ${materia.nome}
-                    </h1>
-
-                    <p>
-                        Estude cada assunto e acompanhe
-                        sua evolução.
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-            <div class="materia-resumo">
-
-
-                <div>
-
-                    <span>
-                        Progresso
-                    </span>
-
-                    <strong id="materiaProgresso">
-                        ${progresso}%
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        Assuntos
-                    </span>
-
-                    <strong>
-                        ${materia.assuntos.length}
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        Concluídos
-                    </span>
-
-                    <strong id="materiaConcluidos">
-                        ${contarAssuntosConcluidos(materia)}
-                    </strong>
-
-                </div>
-
-
-            </div>
-
-
-            <div class="materia-progress-large">
-
-                <div class="progress">
-
-                    <div
-                        id="materiaBarra"
-                        style="
-                            width:${progresso}%;
-                        "
-                    ></div>
-
-                </div>
-
-            </div>
-
-
-            <div class="assuntos-header">
-
-                <h2>
-                    Assuntos
-                </h2>
-
-                <span>
-                    ${materia.assuntos.length}
-                    conteúdos
-                </span>
-
-            </div>
-
-
-            <div
-                class="assuntos-list"
-                id="assuntosList"
-            >
-
-                ${materia.assuntos.map(
-                    (assunto, index) =>
-                        criarCardAssunto(
-                            materia,
-                            assunto,
-                            index
-                        )
-                ).join("")}
-
-            </div>
-
-
-        </div>
-
-    `;
-
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-
-}
-
-
-/* ==========================================
-   CRIAR CARD DO ASSUNTO
-========================================== */
-
-function criarCardAssunto(
-    materia,
-    assunto,
-    index
-) {
-
-    const chave =
-        `${materia.id}_assunto_${index}`;
-
-
-    const concluido =
-        dadosPerfil[chave]?.concluido === true;
-
-
-    return `
-
-        <div
-            class="
-                assunto-card
-                ${concluido ? "concluido" : ""}
-            "
-        >
-
-
-            <div class="assunto-numero">
-
-                ${String(index + 1).padStart(2, "0")}
-
-            </div>
-
-
-            <div class="assunto-info">
-
-                <h3>
-                    ${assunto}
-                </h3>
-
-
-                <span>
-
-                    ${
-                        concluido
-                            ? "✓ Assunto concluído"
-                            : "○ Não concluído"
-                    }
-
-                </span>
-
-            </div>
-
-
-            <div class="assunto-actions">
-
-                ${
-                    concluido
-
-                    ?
-
-                    `
-                        <button
-                            class="btn-concluido"
-                            disabled
-                        >
-                            ✓ Concluído
-                        </button>
-                    `
-
-                    :
-
-                    `
-                        <button
-                            class="btn-assunto"
-                            onclick="
-                                concluirAssunto(
-                                    '${materia.id}',
-                                    ${index}
-                                )
-                            "
-                        >
-                            Marcar concluído
-                        </button>
-                    `
-
-                }
-
-            </div>
-
-
-        </div>
-
-    `;
-
-}
-
-
-/* ==========================================
-   VOLTAR PARA MATÉRIAS
-========================================== */
-
-function voltarMaterias() {
-
-    const paginaMaterias =
-        document.getElementById(
-            "materias"
-        );
-
-
-    if (!paginaMaterias) return;
-
-
-    paginaMaterias.innerHTML = `
-
-        <div class="page-title">
-
-            <h1>
-                Matérias
-            </h1>
-
-            <p>
-                Conteúdo organizado conforme o edital.
-            </p>
-
-        </div>
-
-
-        <div
-            id="materiasContainer"
-            class="cards-container"
-        ></div>
-
-    `;
-
-
-    renderizarMaterias();
-
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-
-}
-
-
-/* ==========================================
-   CONCLUIR ASSUNTO
-========================================== */
-
-function concluirAssunto(
-    materiaId,
-    assuntoIndex
-) {
-
-    const materia =
-        materiasPMES.find(
-            item =>
-                item.id === materiaId
-        );
-
-
-    if (!materia) return;
-
-
-    const chave =
-        `${materiaId}_assunto_${assuntoIndex}`;
-
-
-    if (
-        dadosPerfil[chave]?.concluido
-    ) {
-
-        return;
-
-    }
-
-
-    dadosPerfil[chave] = {
-
-        concluido: true,
-
-        data:
-            new Date().toISOString()
-
-    };
-
-
-    /*
-       Ganho de XP
-    */
-
-    adicionarXP(
-        50,
-        false
-    );
-
-
-    salvarDados();
-
-
-    atualizarPerfil();
-
-    atualizarDashboard();
-
-
-    abrirMateria(
-        materiaId
-    );
-
-}
-
-
-/* ==========================================
-   ADICIONAR XP
-========================================== */
-
-function adicionarXP(
-    quantidade,
-    atualizar = true
-) {
-
-    dadosPerfil.xp +=
-        quantidade;
-
-
-    while (
-        dadosPerfil.xp >=
-        dadosPerfil.xpProximoNivel
-    ) {
-
-        dadosPerfil.xp -=
-            dadosPerfil.xpProximoNivel;
-
-
-        dadosPerfil.nivel++;
-
-
-        dadosPerfil.xpProximoNivel =
-            Math.round(
-                dadosPerfil.xpProximoNivel *
-                1.25
-            );
-
-    }
-
-
-    salvarDados();
-
-
-    if (atualizar) {
-
-        atualizarPerfil();
-
-        atualizarDashboard();
-
-    }
-
-}
-
-
-/* ==========================================
-   REGISTRAR QUESTÃO
-========================================== */
-
-function registrarQuestao(
-    questaoId,
-    acertou
-) {
-
-    dadosPerfil.questoesRespondidas++;
-
-
-    if (acertou) {
-
-        dadosPerfil.questoesAcertadas++;
-
-
-        adicionarXP(10);
-
-    } else {
-
-        dadosPerfil.revisoes.push({
-
-            questaoId:
-                questaoId,
-
-            data:
-                new Date().toISOString()
-
-        });
-
-
-        adicionarXP(3);
-
-    }
-
-
-    dadosPerfil.questoes[questaoId] = {
-
-        acertou:
-            acertou,
-
-        data:
-            new Date().toISOString()
-
-    };
-
-
-    salvarDados();
-
-
-    atualizarDashboard();
-
-}
-
-
-/* ==========================================
-   PROGRESSO GERAL
-========================================== */
-
-function calcularProgressoGeral() {
-
-    let total = 0;
-
-    let concluidos = 0;
-
-
-    materiasPMES.forEach(
-        materia => {
-
-            total +=
-                materia.assuntos.length;
-
-
-            materia.assuntos.forEach(
+    const assuntos =
+        materia.assuntos
+            .map(
                 (assunto, index) => {
 
                     const chave =
                         `${materia.id}_assunto_${index}`;
 
 
-                    if (
-                        dadosPerfil[chave]?.concluido
-                    ) {
+                    const concluido =
+                        dadosPerfil[chave]?.concluido;
 
-                        concluidos++;
 
-                    }
+                    return `
+
+                        <div class="next-item">
+
+                            <strong class="number blue">
+                                ${index + 1}
+                            </strong>
+
+                            <div>
+
+                                <b>
+                                    ${assunto}
+                                </b>
+
+                                <small>
+                                    ${
+                                        concluido
+                                            ? "✅ Concluído"
+                                            : "📚 Pendente"
+                                    }
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    `;
 
                 }
-            );
-
-        }
-    );
+            )
+            .join("");
 
 
-    if (total === 0) {
+    const modal =
+        document.createElement(
+            "div"
+        );
 
-        return 0;
 
-    }
+    modal.className =
+        "modal show";
 
 
-    return Math.round(
+    modal.innerHTML = `
 
-        (
-            concluidos /
-            total
-        ) * 100
+        <div class="profile-modal">
 
+            <button
+                class="close-modal"
+                onclick="this.closest('.modal').remove()"
+            >
+                ×
+            </button>
+
+            <div class="profile-modal-header">
+
+                <div class="profile-modal-icon">
+                    ${materia.icone}
+                </div>
+
+                <div>
+
+                    <h2>
+                        ${materia.nome}
+                    </h2>
+
+                    <p>
+                        ${materia.assuntos.length} assuntos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="next-list">
+
+                ${assuntos}
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        modal
     );
 
 }
 
 
 /* ==========================================
-   APROVEITAMENTO
+   DASHBOARD — MATÉRIAS
 ========================================== */
 
-function calcularAproveitamento() {
+function renderizarDashboardMaterias() {
+
+    const container =
+        document.getElementById(
+            "dashboardMaterias"
+        );
+
+
+    if (!container) return;
+
+
+    container.innerHTML = "";
+
+
+    materiasPMES.forEach(
+        materia => {
+
+            const progresso =
+                calcularProgressoMateria(
+                    materia,
+                    dadosPerfil
+                );
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "subject-card";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    ${materia.icone}
+                    ${materia.nome}
+                </h3>
+
+
+                <div class="subject-content">
+
+                    <div class="
+                        mini-circle
+                        ${
+                            progresso >= 70
+                                ? "green-circle"
+                                : "yellow-circle"
+                        }
+                    ">
+
+                        ${progresso}%
+
+                    </div>
+
+
+                    <div>
+
+                        <p>
+                            Progresso:
+                            <b>
+                                ${progresso}%
+                            </b>
+                        </p>
+
+                        <p>
+                            Assuntos:
+                            <b>
+                                ${materia.assuntos.length}
+                            </b>
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    onclick="
+                        abrirPagina('materias');
+                        abrirMateria('${materia.id}')
+                    "
+                >
+                    Ver matéria
+                </button>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   DESEMPENHO
+========================================== */
+
+function renderizarDesempenho() {
+
+    const container =
+        document.getElementById(
+            "desempenhoContainer"
+        );
+
+
+    if (!container) return;
+
+
+    container.innerHTML = "";
+
+
+    materiasPMES.forEach(
+        materia => {
+
+            const progresso =
+                calcularProgressoMateria(
+                    materia,
+                    dadosPerfil
+                );
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "subject-card";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    ${materia.icone}
+                    ${materia.nome}
+                </h3>
+
+                <div class="subject-content">
+
+                    <div class="
+                        mini-circle
+                        ${
+                            progresso >= 70
+                                ? "green-circle"
+                                : "yellow-circle"
+                        }
+                    ">
+
+                        ${progresso}%
+
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Conteúdo:
+                            <b>${progresso}%</b>
+                        </p>
+
+                        <p>
+                            Questões:
+                            <b>${dadosPerfil.questoesRespondidas}</b>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   REVISÕES
+========================================== */
+
+function renderizarRevisoes() {
+
+    const container =
+        document.getElementById(
+            "revisoesContainer"
+        );
+
+
+    if (!container) return;
+
 
     if (
-        dadosPerfil.questoesRespondidas ===
-        0
+        dadosPerfil.revisoes.length === 0
     ) {
 
-        return 0;
+        container.innerHTML = `
+
+            <span>
+                🔄
+            </span>
+
+            <h2>
+                Nenhuma revisão pendente
+            </h2>
+
+            <p>
+                Quando você errar questões,
+                elas aparecerão aqui.
+            </p>
+
+        `;
+
+
+        return;
 
     }
 
 
-    return Math.round(
+    container.className =
+        "review-list";
 
-        (
-            dadosPerfil.questoesAcertadas /
-            dadosPerfil.questoesRespondidas
-        ) * 100
 
-    );
+    container.innerHTML = "";
 
-}
 
+    dadosPerfil.revisoes.forEach(
+        revisao => {
 
-/* ==========================================
-   ATUALIZAR DASHBOARD
-========================================== */
+            const div =
+                document.createElement(
+                    "div"
+                );
 
-function atualizarDashboard() {
 
-    const progresso =
-        calcularProgressoGeral();
+            div.innerHTML = `
 
+                <b>
+                    📚 Questão para revisar
+                </b>
 
-    const aproveitamento =
-        calcularAproveitamento();
+                <small>
+                    ID: ${revisao.questaoId}
+                </small>
 
+                <label>
+                    Revisar
+                </label>
 
-    /*
-       PROGRESSO
-    */
+            `;
 
-    document
-        .querySelectorAll("[data-progresso]")
-        .forEach(element => {
 
-            element.textContent =
-                `${progresso}%`;
-
-        });
-
-
-    document
-        .querySelectorAll("[data-barra-progresso]")
-        .forEach(element => {
-
-            element.style.width =
-                `${progresso}%`;
-
-        });
-
-
-    /*
-       APROVEITAMENTO
-    */
-
-    document
-        .querySelectorAll("[data-aproveitamento]")
-        .forEach(element => {
-
-            element.textContent =
-                `${aproveitamento}%`;
-
-        });
-
-
-    /*
-       XP
-    */
-
-    document
-        .querySelectorAll("[data-xp]")
-        .forEach(element => {
-
-            element.textContent =
-                dadosPerfil.xp;
-
-        });
-
-
-    /*
-       NÍVEL
-    */
-
-    document
-        .querySelectorAll("[data-nivel]")
-        .forEach(element => {
-
-            element.textContent =
-                dadosPerfil.nivel;
-
-        });
-
-
-    /*
-       SEQUÊNCIA
-    */
-
-    document
-        .querySelectorAll("[data-sequencia]")
-        .forEach(element => {
-
-            element.textContent =
-                dadosPerfil.sequencia;
-
-        });
-
-
-    /*
-       BARRA DE XP
-    */
-
-    const xpAtual =
-        dadosPerfil.xp;
-
-
-    const xpMax =
-        dadosPerfil.xpProximoNivel;
-
-
-    const porcentagemXP =
-        xpMax > 0
-            ? Math.round(
-                (xpAtual / xpMax) * 100
-            )
-            : 0;
-
-
-    document
-        .querySelectorAll("[data-barra-xp]")
-        .forEach(element => {
-
-            element.style.width =
-                `${porcentagemXP}%`;
-
-        });
-
-
-    console.log(
-        "Progresso:",
-        progresso + "%"
-    );
-
-
-    console.log(
-        "Aproveitamento:",
-        aproveitamento + "%"
-    );
-
-
-    console.log(
-        "XP:",
-        dadosPerfil.xp
-    );
-
-
-    console.log(
-        "Nível:",
-        dadosPerfil.nivel
-    );
-
-}
-
-
-/* ==========================================
-   REDAÇÃO
-========================================== */
-
-const redacao =
-    document.querySelector(
-        ".redacao-area"
-    );
-
-
-if (redacao) {
-
-    const textoSalvo =
-        carregarProgresso(
-            "redacao"
-        );
-
-
-    if (textoSalvo) {
-
-        redacao.value =
-            textoSalvo;
-
-    }
-
-
-    redacao.addEventListener(
-        "input",
-        () => {
-
-            salvarProgresso(
-                "redacao",
-                redacao.value
+            container.appendChild(
+                div
             );
 
         }
@@ -1280,53 +1830,256 @@ if (redacao) {
 
 
 /* ==========================================
-   SALVAR PROGRESSO
+   REVISÕES — DASHBOARD
 ========================================== */
 
-function salvarProgresso(
-    chave,
-    valor
-) {
+function renderizarRevisoesDashboard() {
 
-    dadosPerfil[chave] =
-        valor;
-
-
-    salvarDados();
-
-}
-
-
-/* ==========================================
-   CARREGAR PROGRESSO
-========================================== */
-
-function carregarProgresso(
-    chave
-) {
-
-    return dadosPerfil[chave];
-
-}
-
-
-/* ==========================================
-   ABRIR AULA
-========================================== */
-
-function abrirAula() {
-
-    const aulaMenu =
-        document.querySelector(
-            '[data-page="aula"]'
+    const container =
+        document.getElementById(
+            "dashboardRevisoes"
         );
 
 
-    if (aulaMenu) {
+    if (!container) return;
 
-        aulaMenu.click();
+
+    container.innerHTML = "";
+
+
+    if (
+        dadosPerfil.revisoes.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div>
+
+                <b>
+                    🎯 Tudo em dia!
+                </b>
+
+                <small>
+                    Nenhuma revisão pendente.
+                </small>
+
+                <label>
+                    Continue estudando
+                </label>
+
+            </div>
+
+        `;
+
+
+        return;
 
     }
+
+
+    dadosPerfil.revisoes
+        .slice(-3)
+        .forEach(
+            revisao => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.innerHTML = `
+
+                    <b>
+                        📚 Revisar questão
+                    </b>
+
+                    <small>
+                        Questão ${revisao.questaoId}
+                    </small>
+
+                    <label>
+                        Revisar
+                    </label>
+
+                `;
+
+
+                container.appendChild(
+                    div
+                );
+
+            }
+        );
+
+}
+
+
+/* ==========================================
+   RANKING
+========================================== */
+
+function obterDadosPerfil(
+    nome
+) {
+
+    const salvo =
+        localStorage.getItem(
+            `nss_${nome}`
+        );
+
+
+    if (!salvo) {
+
+        return criarDadosIniciais();
+
+    }
+
+
+    try {
+
+        return {
+
+            ...criarDadosIniciais(),
+
+            ...JSON.parse(
+                salvo
+            )
+
+        };
+
+    } catch {
+
+        return criarDadosIniciais();
+
+    }
+
+}
+
+
+/* ==========================================
+   RENDERIZAR RANKING
+========================================== */
+
+function renderizarRanking() {
+
+    const container =
+        document.getElementById(
+            "rankingContainer"
+        );
+
+
+    if (!container) return;
+
+
+    const ranking = [
+
+        {
+
+            nome: "Felipe",
+
+            dados:
+                obterDadosPerfil(
+                    "Felipe"
+                )
+
+        },
+
+        {
+
+            nome: "Primo",
+
+            dados:
+                obterDadosPerfil(
+                    "Primo"
+                )
+
+        }
+
+    ];
+
+
+    ranking.sort(
+        (a, b) =>
+            b.dados.xp -
+            a.dados.xp
+    );
+
+
+    container.innerHTML = "";
+
+
+    ranking.forEach(
+        (perfil, index) => {
+
+            const medalhas = [
+
+                "🥇",
+
+                "🥈"
+
+            ];
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "ranking-card";
+
+
+            card.innerHTML = `
+
+                <div class="ranking-position">
+
+                    ${
+                        medalhas[index]
+                            || `${index + 1}º`
+                    }
+
+                </div>
+
+
+                <div class="ranking-avatar">
+
+                    👤
+
+                </div>
+
+
+                <div class="ranking-info">
+
+                    <strong>
+                        ${perfil.nome}
+                    </strong>
+
+                    <span>
+                        Nível ${perfil.dados.nivel}
+                        •
+                        ${perfil.dados.sequencia} dias
+                    </span>
+
+                </div>
+
+
+                <div class="ranking-xp">
+
+                    ${perfil.dados.xp} XP
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
 
 }
 
@@ -1335,101 +2088,82 @@ function abrirAula() {
    MODAL DE PERFIL
 ========================================== */
 
-const profileModal =
-    document.getElementById(
-        "profileModal"
-    );
+function abrirModalPerfil() {
+
+    atualizarDadosDosPerfis();
 
 
-const switchProfile =
-    document.getElementById(
-        "switchProfile"
-    );
+    const modal =
+        document.getElementById(
+            "profileModal"
+        );
 
 
-const profileSelector =
-    document.getElementById(
-        "profileSelector"
-    );
+    if (!modal) return;
 
 
-const topProfile =
-    document.getElementById(
-        "topProfile"
-    );
-
-
-if (switchProfile) {
-
-    switchProfile.addEventListener(
-        "click",
-        () => {
-
-            if (profileModal) {
-
-                profileModal.classList.add(
-                    "show"
-                );
-
-            }
-
-        }
+    modal.classList.add(
+        "show"
     );
 
 }
 
 
-if (profileSelector) {
+function fecharModal() {
 
-    profileSelector.addEventListener(
-        "click",
-        () => {
-
-            if (profileModal) {
-
-                profileModal.classList.add(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-}
+    const modal =
+        document.getElementById(
+            "profileModal"
+        );
 
 
-if (topProfile) {
+    if (!modal) return;
 
-    topProfile.addEventListener(
-        "click",
-        () => {
 
-            if (profileModal) {
-
-                profileModal.classList.add(
-                    "show"
-                );
-
-            }
-
-        }
+    modal.classList.remove(
+        "show"
     );
 
 }
 
 
 /* ==========================================
-   FECHAR MODAL
+   DADOS DOS PERFIS NO MODAL
 ========================================== */
 
-function fecharModal() {
+function atualizarDadosDosPerfis() {
 
-    if (!profileModal) return;
+    const perfis = [
+
+        "Felipe",
+
+        "Primo"
+
+    ];
 
 
-    profileModal.classList.remove(
-        "show"
+    perfis.forEach(
+        nome => {
+
+            const dados =
+                obterDadosPerfil(
+                    nome
+                );
+
+
+            const elemento =
+                document.getElementById(
+                    `profileXP${nome}`
+                );
+
+
+            if (!elemento) return;
+
+
+            elemento.textContent =
+                `${dados.xp} XP • Nível ${dados.nivel}`;
+
+        }
     );
 
 }
@@ -1443,7 +2177,30 @@ function trocarPerfil(
     nome
 ) {
 
-    if (!profiles[nome]) return;
+    if (
+        !profiles[nome]
+    ) return;
+
+
+    if (
+        nome === activeProfile
+    ) {
+
+        fecharModal();
+
+
+        mostrarToast(
+
+            "Perfil já selecionado",
+
+            `Você já está usando ${nome}.`
+
+        );
+
+
+        return;
+
+    }
 
 
     activeProfile =
@@ -1451,8 +2208,11 @@ function trocarPerfil(
 
 
     localStorage.setItem(
+
         "nss_pmes_profile",
+
         nome
+
     );
 
 
@@ -1466,7 +2226,92 @@ function trocarPerfil(
 
     renderizarMaterias();
 
+    renderizarRanking();
+
+    atualizarDadosDosPerfis();
+
+
     fecharModal();
+
+
+    mostrarToast(
+
+        "Perfil carregado! ✓",
+
+        `Bem-vindo de volta, ${nome}!`
+
+    );
+
+}
+
+
+/* ==========================================
+   TOAST
+========================================== */
+
+function mostrarToast(
+    titulo,
+    mensagem
+) {
+
+    const toast =
+        document.getElementById(
+            "profileToast"
+        );
+
+
+    const toastTitle =
+        document.getElementById(
+            "toastTitle"
+        );
+
+
+    const toastMessage =
+        document.getElementById(
+            "toastMessage"
+        );
+
+
+    if (!toast) return;
+
+
+    if (toastTitle) {
+
+        toastTitle.textContent =
+            titulo;
+
+    }
+
+
+    if (toastMessage) {
+
+        toastMessage.textContent =
+            mensagem;
+
+    }
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        window.profileToastTimer
+    );
+
+
+    window.profileToastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            3000
+        );
 
 }
 
@@ -1475,7 +2320,9 @@ function trocarPerfil(
    FECHAR MODAL CLICANDO FORA
 ========================================== */
 
-if (profileModal) {
+if (
+    profileModal
+) {
 
     profileModal.addEventListener(
         "click",
@@ -1497,32 +2344,131 @@ if (profileModal) {
 
 
 /* ==========================================
-   RESETAR PROGRESSO
+   BOTÕES DE PERFIL
 ========================================== */
 
-function resetarProgresso() {
+if (
+    switchProfile
+) {
+
+    switchProfile.addEventListener(
+
+        "click",
+
+        abrirModalPerfil
+
+    );
+
+}
+
+
+if (
+    profileSelector
+) {
+
+    profileSelector.addEventListener(
+
+        "click",
+
+        abrirModalPerfil
+
+    );
+
+}
+
+
+if (
+    topProfile
+) {
+
+    topProfile.addEventListener(
+
+        "click",
+
+        abrirModalPerfil
+
+    );
+
+}
+
+
+/* ==========================================
+   REDAÇÃO
+========================================== */
+
+const redacao =
+    document.getElementById(
+        "redacaoArea"
+    );
+
+
+if (redacao) {
+
+    const texto =
+        dadosPerfil.redacao || "";
+
+
+    redacao.value =
+        texto;
+
+
+    redacao.addEventListener(
+        "input",
+        () => {
+
+            dadosPerfil.redacao =
+                redacao.value;
+
+
+            salvarDados();
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   RESETAR PERFIL
+========================================== */
+
+function resetarPerfil() {
 
     const confirmar =
         confirm(
 
-            "⚠️ ATENÇÃO!\n\n" +
+            `⚠️ ATENÇÃO!\n\n` +
 
-            `Isso vai apagar todo o progresso do perfil ${activeProfile}.\n\n` +
+            `Você está prestes a apagar TODO o progresso do perfil ${activeProfile}.\n\n` +
 
-            "XP\n" +
-            "Nível\n" +
-            "Questões\n" +
-            "Assuntos concluídos\n" +
-            "Revisões\n" +
-            "Redação\n" +
-            "Tempo de estudo\n\n" +
+            `Isso inclui:\n` +
 
-            "Deseja realmente começar do ZERO?"
+            `• XP\n` +
+
+            `• Nível\n` +
+
+            `• Questões\n` +
+
+            `• Assuntos concluídos\n` +
+
+            `• Revisões\n` +
+
+            `• Redação\n` +
+
+            `• Tempo de estudo\n` +
+
+            `• Sequência\n\n` +
+
+            `Essa ação não poderá ser desfeita.\n\n` +
+
+            `Deseja realmente continuar?`
 
         );
 
 
-    if (!confirmar) return;
+    if (
+        !confirmar
+    ) return;
 
 
     dadosPerfil =
@@ -1538,33 +2484,19 @@ function resetarProgresso() {
 
     renderizarMaterias();
 
+    renderizarDesempenho();
 
-    /*
-       Se estiver dentro de uma matéria,
-       volta para a lista.
-    */
+    renderizarRanking();
 
-    const paginaMaterias =
-        document.getElementById(
-            "materias"
-        );
+    atualizarDadosDosPerfis();
 
 
-    if (
-        paginaMaterias &&
-        paginaMaterias.classList.contains(
-            "active-page"
-        )
-    ) {
+    mostrarToast(
 
-        voltarMaterias();
+        "Progresso resetado! ✓",
 
-    }
+        `O perfil ${activeProfile} voltou ao nível 1.`
 
-
-    alert(
-        "✅ Progresso resetado!\n\n" +
-        "O perfil começou do zero."
     );
 
 }
@@ -1579,6 +2511,12 @@ atualizarPerfil();
 atualizarDashboard();
 
 renderizarMaterias();
+
+renderizarDesempenho();
+
+renderizarRanking();
+
+renderizarRevisoesDashboard();
 
 
 console.log(
