@@ -1135,3 +1135,45 @@ console.log(
 console.log(
     "================================"
 );
+
+/* ==========================================
+   RESETAR PROGRESSO DO PERFIL
+========================================== */
+
+function resetarProgresso() {
+
+    const confirmar = confirm(
+        "⚠️ ATENÇÃO!\n\n" +
+        "Isso vai apagar todo o progresso deste perfil:\n\n" +
+        "• XP\n" +
+        "• Nível\n" +
+        "• Questões\n" +
+        "• Assuntos concluídos\n" +
+        "• Revisões\n" +
+        "• Redação salva\n" +
+        "• Tempo de estudo\n\n" +
+        "Deseja realmente começar do ZERO?"
+    );
+
+    if (!confirmar) return;
+
+    localStorage.removeItem(
+        `nss_${activeProfile}`
+    );
+
+    dadosPerfil = criarDadosIniciais();
+
+    salvarDados();
+
+    atualizarPerfil();
+
+    atualizarDashboard();
+
+    renderizarMaterias();
+
+    alert(
+        "✅ Progresso resetado!\n\n" +
+        "O perfil começou do zero."
+    );
+
+}
