@@ -85,3 +85,70 @@ const materiasPMES = [
 
         assuntos: [
             "Localização geográfica",
+            "Coordenadas geográficas",
+            "Movimentos da Terra",
+            "Fusos horários",
+            "Relevo",
+            "Clima",
+            "Vegetação",
+            "Hidrografia",
+            "População",
+            "Urbanização",
+            "Industrialização",
+            "Economia brasileira",
+            "Geografia do Espírito Santo"
+        ]
+    },
+
+    {
+        id: "historia",
+        nome: "História",
+        icone: "🏛️",
+        cor: "yellow",
+        progresso: 0,
+
+        assuntos: [
+            "Brasil Colonial",
+            "Independência do Brasil",
+            "Primeiro Reinado",
+            "Período Regencial",
+            "Segundo Reinado",
+            "República Velha",
+            "Era Vargas",
+            "República Populista",
+            "Ditadura Militar",
+            "Nova República",
+            "História do Espírito Santo"
+        ]
+    }
+
+];
+
+
+/* ==========================================
+   FUNÇÃO PARA CALCULAR PROGRESSO
+========================================== */
+
+function calcularProgressoMateria(materia, progresso) {
+
+    if (!materia.assuntos || materia.assuntos.length === 0) {
+        return 0;
+    }
+
+    let concluidos = 0;
+
+    materia.assuntos.forEach((assunto, index) => {
+
+        const chave =
+            `${materia.id}_assunto_${index}`;
+
+        if (progresso[chave]?.concluido === true) {
+            concluidos++;
+        }
+
+    });
+
+    return Math.round(
+        (concluidos / materia.assuntos.length) * 100
+    );
+}
